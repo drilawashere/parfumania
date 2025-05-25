@@ -160,44 +160,33 @@
             </div>
           </div>
 
-<div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4" v-for="product in displayedBestSelling" :key="product.id">
-
-            <div class="product-card-enhanced">
-              <div class="product-badges">
-                <span class="badge-discount" v-if="product.discount">-{{ product.discount }}%</span>
-                <span class="badge-bestseller">Bestseller</span>
-              </div>
-
-              <div class="product-image-container-enhanced">
-                <router-link :to="`/product/${product.id}`" class="product-link">
-                  <img :src="product.imageUrl" :alt="product.title" class="product-image-enhanced" />
-                </router-link>
-                <div class="product-actions">
-                  <!-- <button class="action-btn-small" title="Add to wishlist">
-                    <i class="far fa-heart"></i>
-                  </button> -->
-                  <button class="action-btn-small" title="Quick view">
-                    <i class="far fa-eye"></i>
-                  </button>
-                </div>
-              </div>
-
-
-       <div class="product-details-enhanced">
-  <h6 class="product-name-enhanced mb-2">{{ product.title }}</h6>
-  <div class="product-info-row d-flex justify-content-between align-items-center">
-    <p class="product-category-enhanced mb-0">{{ product.category }}</p>
-    <div class="product-price-right text-end">
-      <span class="current-price d-block">{{ product.price }}€</span>
-      <span class="original-price d-block" v-if="product.discount">{{ Math.round(product.price * 1.2) }}€</span>
+<router-link
+  v-for="product in displayedBestSelling"
+  :key="product.id"
+  :to="`/product/${product.id}`"
+  class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4 product-link"
+  style="text-decoration: none;"
+>
+  <div class="product-card-enhanced">
+    <div class="product-badges">
+      <span class="badge-discount" v-if="product.discount">-{{ product.discount }}%</span>
+      <span class="badge-bestseller">Bestseller</span>
+    </div>
+    <div class="product-image-container-enhanced">
+      <img :src="product.imageUrl" :alt="product.title" class="product-image-enhanced" />
+    </div>
+    <div class="product-details-enhanced">
+      <h6 class="product-name-enhanced mb-2">{{ product.title }}</h6>
+      <div class="product-info-row d-flex justify-content-between align-items-center">
+        <p class="product-category-enhanced mb-0">{{ product.category }}</p>
+        <div class="product-price-right text-end">
+          <span class="current-price d-block">{{ product.price }}€</span>
+          <span class="original-price d-block" v-if="product.discount">{{ Math.round(product.price * 1.2) }}€</span>
+        </div>
+      </div>
     </div>
   </div>
-  <!-- <div class="btn-add-to-cart-wrapper w-100 text-center mt-1">
-    <button class="btn-add-to-cart">Add to Cart</button>
-  </div> -->
-</div>
-            </div>
-          </div>
+</router-link>
           
         </div>
       <div class="pagination-wrapper" v-if="totalBestSellingPages > 1">
@@ -321,24 +310,21 @@
           </div>
 
 <!-- filepath: c:\Users\PC\Desktop\parfumania\src\views\HomeView.vue -->
-<div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4" v-for="product in displayedNewProducts" :key="product.id">
+<router-link
+  v-for="product in displayedNewProducts"
+  :key="product.id"
+  :to="`/product/${product.id}`"
+  class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4 product-link"
+  style="text-decoration: none;"
+>
   <div class="product-card-enhanced new-product">
     <div class="product-badges">
       <span class="badge-new" v-if="product.new">New</span>
       <span class="badge-discount" v-if="product.discount">-{{ product.discount }}%</span>
     </div>
-
     <div class="product-image-container-enhanced">
-      <router-link :to="`/product/${product.id}`" class="product-link">
-        <img :src="product.imageUrl" :alt="product.title" class="product-image-enhanced" />
-      </router-link>
-      <div class="product-actions">
-        <button class="action-btn-small" title="Quick view">
-          <i class="far fa-eye"></i>
-        </button>
-      </div>
+      <img :src="product.imageUrl" :alt="product.title" class="product-image-enhanced" />
     </div>
-
     <div class="product-details-enhanced">
       <h6 class="product-name-enhanced mb-2">{{ product.title }}</h6>
       <div class="product-info-row d-flex justify-content-between align-items-center">
@@ -350,7 +336,7 @@
       </div>
     </div>
   </div>
-</div>
+</router-link>
         </div>
       </div>
     </div>
@@ -1044,10 +1030,10 @@ methods: {
   flex-direction: column;
 }
 
-.product-card-enhanced:hover {
+/* .product-card-enhanced:hover {
   transform: translateY(-8px);
   box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
-}
+} */
 
 .product-card-enhanced::before {
   content: '';

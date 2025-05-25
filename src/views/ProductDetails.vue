@@ -25,8 +25,8 @@
     
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mx-auto mobile-nav-menu">
-      <li class="nav-item active">
-  <a class="nav-link nav-link-enhanced" href="#" @click="closeMobileMenu">HOME</a>
+      <li class="nav-item">
+  <a class="nav-link nav-link-enhanced" href="/" @click="closeMobileMenu">HOME</a>
 </li>
 <li class="nav-item">
   <router-link class="nav-link nav-link-enhanced" to="/categories" @click="closeMobileMenu">CATEGORIES</router-link>
