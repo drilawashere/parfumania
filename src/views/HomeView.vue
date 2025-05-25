@@ -62,7 +62,7 @@
 </nav>
 
     <!-- Hero Banner -->
-    <div class="hero-banner-enhanced" style="background-image: url('/src/assets/sdsd.jpg');">
+<div class="hero-banner-enhanced" :style="{ backgroundImage: `url(${heroImg})` }">
       <div class="hero-overlay"></div>
       <div class="container h-100">
         <div class="row h-100 align-items-center">
@@ -92,11 +92,7 @@
           <div class="col-md-3 col-sm-6 mb-4" v-for="(cat, i) in 4" :key="i">
             <div class="category-card-enhanced">
               <div class="category-image-wrapper">
-                <img 
-                  :src="i === 0 ? '/src/assets/FullSizeRender.jpeg' : i === 1 ? '/src/assets/soul1.jpeg' : i === 2 ? '/src/assets/soul2.jpeg' : '/src/assets/soul3.jpeg'" 
-                  alt="Perfume Category" 
-                  class="category-image"
-                >
+              <img :src="categoryImages[i]" alt="Perfume Category" class="category-image" />
                 <div class="category-overlay">
                   <button class="btn btn-sm btn-light">Explore</button>
                 </div>
@@ -503,11 +499,18 @@
 <script>
 import { db } from '@/firebase'
 import { collection, getDocs, query, orderBy } from 'firebase/firestore'
+import heroImg from '@/assets/sdsd.jpg'
+import img0 from '@/assets/FullSizeRender.jpeg'
+import img1 from '@/assets/soul1.jpeg'
+import img2 from '@/assets/soul2.jpeg'
+import img3 from '@/assets/soul3.jpeg'
 
 export default {
   name: 'ParfumUmana',
   data() {
     return {
+        categoryImages: [img0, img1, img2, img3],
+      heroImg,
       bestSellingProducts: [],
       newProducts: [],
       loading: true,
