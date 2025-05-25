@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import AdminPaneli from '@/views/AdminPaneli.vue'
+import OrderForm from '@/views/OrderForm.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,6 +23,11 @@ const router = createRouter({
       name: 'ProductDetails',
       component: () => import('@/views/ProductDetails.vue'),
     },
+    {
+  path: '/order',
+  name: 'OrderForm',
+  component: OrderForm
+},
     {
       path: '/categories',
       name: 'Categories',

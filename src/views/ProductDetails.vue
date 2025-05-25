@@ -109,9 +109,8 @@
         <div class="product-info">
           <h1 class="product-title mb-2">{{ product.title }}</h1>
           <p class="product-category text-muted mb-3">{{ product.category }}</p>
-          
           <!-- Interactive Star Rating -->
-          <div class="rating-section mb-3">
+          <!-- <div class="rating-section mb-3">
             <div class="rating mb-1">
               <i 
                 v-for="star in 5" 
@@ -123,7 +122,7 @@
                 {{ product.rating || 4.5 }} ({{ product.reviewCount || 127 }} reviews)
               </span>
             </div>
-          </div>
+          </div> -->
           
           <!-- Dynamic Pricing -->
           <div class="pricing-section mb-4">
@@ -163,7 +162,7 @@
           </div>
           
           <!-- Enhanced Features -->
-          <div class="features-section mb-4">
+          <!-- <div class="features-section mb-4">
             <h6 class="fw-bold mb-2">Key Features:</h6>
             <div class="feature-list">
               <div v-for="feature in productFeatures" :key="feature" class="feature-item mb-2">
@@ -171,7 +170,7 @@
                 {{ feature }}
               </div>
             </div>
-          </div>
+          </div> -->
 
           <!-- Variant Selection (if available) -->
           <div v-if="product.variants && product.variants.length > 0" class="variants-section mb-4">
@@ -233,15 +232,9 @@
                 :disabled="!canAddToCart"
               >
                 <i class="fas fa-shopping-cart me-2"></i>
-                ADD TO CART - ${{ totalPrice.toFixed(2) }}
+               Porosit Tani - ${{ totalPrice.toFixed(2) }}
               </button>
-              <button 
-                class="btn btn-outline-danger btn-lg me-2"
-                @click="toggleWishlist"
-                :class="{ active: isInWishlist }"
-              >
-                <i :class="isInWishlist ? 'fas fa-heart' : 'far fa-heart'"></i>
-              </button>
+
               <div class="btn-group">
                 <button class="btn btn-outline-secondary" @click="shareProduct">
                   <i class="fas fa-share-alt"></i>
@@ -252,9 +245,7 @@
 
           <!-- Enhanced Product Metadata -->
           <div class="product-meta">
-            <div class="meta-item mb-2">
-              <strong>SKU:</strong> {{ product.sku || '4554251-1' }}
-            </div>
+            
             <div class="meta-item mb-2">
               <strong>Category:</strong> 
               <span class="badge bg-light text-dark ms-1">{{ product.category }}</span>
@@ -281,14 +272,8 @@
                 <i class="fas fa-truck text-success"></i>
                 <span class="small">Free Shipping</span>
               </div>
-              <div class="trust-badge">
-                <i class="fas fa-undo text-success"></i>
-                <span class="small">30-Day Returns</span>
-              </div>
-              <div class="trust-badge">
-                <i class="fas fa-shield-alt text-success"></i>
-                <span class="small">2-Year Warranty</span>
-              </div>
+           
+            
             </div>
           </div>
         </div>
@@ -307,36 +292,6 @@
               href="#"
             >
               DESCRIPTION
-            </a>
-          </li>
-          <li class="nav-item">
-            <a 
-              class="nav-link" 
-              :class="{ active: activeTab === 'specifications' }"
-              @click="activeTab = 'specifications'"
-              href="#"
-            >
-              SPECIFICATIONS
-            </a>
-          </li>
-          <li class="nav-item">
-            <a 
-              class="nav-link" 
-              :class="{ active: activeTab === 'reviews' }"
-              @click="activeTab = 'reviews'"
-              href="#"
-            >
-              REVIEWS <span class="text-success">({{ product.reviewCount || 1 }})</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a 
-              class="nav-link" 
-              :class="{ active: activeTab === 'shipping' }"
-              @click="activeTab = 'shipping'"
-              href="#"
-            >
-              SHIPPING & RETURNS
             </a>
           </li>
         </ul>
@@ -365,7 +320,7 @@
             </div>
           </div>
           
-          <div v-if="activeTab === 'reviews'" class="tab-pane active">
+          <!-- <div v-if="activeTab === 'reviews'" class="tab-pane active">
             <div class="tab-content-section">
               <h5>Customer Reviews</h5>
               <div class="reviews-summary mb-4">
@@ -379,27 +334,9 @@
               </div>
               <p class="text-muted">Reviews section would display actual customer reviews here.</p>
             </div>
-          </div>
+          </div> -->
           
-          <div v-if="activeTab === 'shipping'" class="tab-pane active">
-            <div class="tab-content-section">
-              <h5>Shipping & Returns</h5>
-              <div class="shipping-info">
-                <div class="info-item mb-3">
-                  <h6><i class="fas fa-truck me-2"></i>Free Shipping</h6>
-                  <p>Free standard shipping on orders over $50. Express shipping available.</p>
-                </div>
-                <div class="info-item mb-3">
-                  <h6><i class="fas fa-undo me-2"></i>Easy Returns</h6>
-                  <p>30-day return policy. Items must be in original condition.</p>
-                </div>
-                <div class="info-item">
-                  <h6><i class="fas fa-clock me-2"></i>Delivery Time</h6>
-                  <p>Standard: 3-7 business days | Express: 1-2 business days</p>
-                </div>
-              </div>
-            </div>
-          </div>
+       
         </div>
       </div>
     </div>
@@ -533,18 +470,20 @@ export default {
         this.quantity = this.product.stock || 999
       }
     },
-    addToCart() {
-      // Add to cart logic here
-      console.log('Adding to cart:', {
-        product: this.product,
-        quantity: this.quantity,
-        variant: this.selectedVariant,
-        totalPrice: this.totalPrice
-      })
-      
-      // Show success message or emit event
-      alert(`Added ${this.quantity} ${this.product.title} to cart!`)
-    },
+ addToCart() {
+    const productData = {
+      id: this.product.id,
+      title: this.product.title,
+      price: this.product.price,
+      imageUrl: this.product.imageUrl,
+      quantity: this.quantity || 1
+    }
+    
+    this.$router.push({
+      name: 'OrderForm',
+      query: { data: JSON.stringify(productData) }  // Changed from params to query
+    })
+  },
     toggleWishlist() {
       this.isInWishlist = !this.isInWishlist
       // Add wishlist logic here
