@@ -13,9 +13,9 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/admin-paneli-i-parfumania-web-veq-personale',
+      path: '/admin',
       name: 'AdminPanel',
-      component: () => import('@/views/AdminPaneli.vue'),
+      component: AdminPaneli,
     },
     // ...existing code...
     {
