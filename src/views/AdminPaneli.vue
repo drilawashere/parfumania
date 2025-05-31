@@ -475,7 +475,7 @@
                     <td class="align-middle">{{ index + 1 }}</td>
                     <td class="align-middle">
                       <img 
-                        :src="product.imageUrl || 'https://via.placeholder.com/60x60?text=No+Image'" 
+                        :src="product.imageUrl" 
                         alt="Product" 
                         class="product-table-image rounded"
                         @error="handleImageError"

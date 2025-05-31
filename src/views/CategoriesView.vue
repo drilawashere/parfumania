@@ -937,7 +937,7 @@ export default {
 .product-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain; /* Show the whole image */
   transition: transform 0.4s ease;
 }
 

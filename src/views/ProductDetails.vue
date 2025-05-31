@@ -149,16 +149,19 @@
           
           <!-- Description with Read More -->
           <div class="description-section mb-4">
-            <p class="description" :class="{ collapsed: !showFullDescription && product.description.length > 150 }">
-              {{ product.description }}
-            </p>
-            <button 
-              v-if="product.description.length > 150"
-              @click="showFullDescription = !showFullDescription"
-              class="btn btn-link p-0 small"
-            >
-              {{ showFullDescription ? 'Read Less' : 'Read More' }}
-            </button>
+           <p
+  class="description"
+  :class="{ collapsed: !showFullDescription && product && product.description && product.description.length > 150 }"
+>
+  {{ product && product.description ? product.description : '' }}
+</p>
+<button
+  v-if="product && product.description && product.description.length > 150"
+  @click="showFullDescription = !showFullDescription"
+  class="btn btn-link p-0 small"
+>
+  {{ showFullDescription ? 'Read Less' : 'Read More' }}
+</button>
           </div>
           
           <!-- Enhanced Features -->
@@ -631,11 +634,24 @@ export default {
 }
 
 .product-main-image {
-  padding: 20px;
+  padding: 20px;                  /* Smaller padding */
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.08);
   position: relative;
+  margin: 0 auto;                /* Center horizontally */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-image {
+  max-height: 220px;             /* Make the image itself smaller */
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
 }
 
 .image-container {

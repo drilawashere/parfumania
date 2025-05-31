@@ -263,27 +263,64 @@ export default {
     }
   },
   methods: {
-    submitOrder() {
-      this.isSubmitting = true
+    async submitOrder() {
+    this.isSubmitting = true;
+    
+    try {
+      // Your bot token from @BotFather
+      const BOT_TOKEN = '7270860107:AAGerQQIYaX7I5A62uZXv2XTxh2lVYuY1KA';
+      // Your chat ID from @userinfobot
+      const CHAT_ID = '1674339130';
       
-      // Simulate API call
-      setTimeout(() => {
-        console.log('Order submitted:', {
-          ...this.orderDetails,
-          product: this.product,
-          total: this.calculateTotal()
+      // Format message for Telegram
+      const message = `
+🛍️ Porosi e Re e Marrë!
+
+👤 Detajet e Klientit:
+
+Emri: ${this.orderDetails.firstName} ${this.orderDetails.lastName}
+Nr. Telefonit: ${this.orderDetails.phone}
+Adresa: ${this.orderDetails.address}
+
+📦 Detajet e Produktit:
+
+Produkti: ${this.product.title}
+Çmimi: ${this.product.price}€
+Sasia: ${this.orderDetails.quantity}
+Totali: ${this.calculateTotal()}€
+      `.trim();
+
+      // Send to Telegram
+      const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text: message,
+          parse_mode: 'HTML'
         })
-        
-        this.isSubmitting = false
-        
-        // Show success message with better UX
-        this.showSuccessMessage()
-        
-        setTimeout(() => {
-          this.$router.push('/')
-        }, 2000)
-      }, 2000)
-    },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send to Telegram');
+      }
+
+      // Show success message
+      this.showSuccessMessage();
+      
+      setTimeout(() => {
+        this.$router.push('/');
+      }, 2000);
+
+    } catch (error) {
+      console.error('Error submitting order:', error);
+      alert('There was an error submitting your order. Please try again.');
+    } finally {
+      this.isSubmitting = false;
+    }
+  },
     
     showSuccessMessage() {
       // Create and show a success toast/modal
@@ -558,7 +595,7 @@ export default {
 
 .floating-input {
   width: 100%;
-  padding: 1.25rem 1rem 0.75rem;
+  padding: 1.3rem 1rem 0.75rem;
   border: 2px solid #e5e7eb;
   border-radius: 16px;
   font-size: 1rem;
@@ -590,7 +627,7 @@ export default {
 .floating-label {
   position: absolute;
   left: 1rem;
-  top: 1.25rem;
+  top: 0.8rem;
   color: #6b7280;
   transition: all 0.3s ease;
   pointer-events: none;

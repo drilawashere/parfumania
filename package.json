@@ -19,7 +19,9 @@
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.6",
     "bootstrap-vue": "^2.23.1",
+    "csv-parser": "^3.2.0",
     "firebase": "^11.7.3",
+    "firebase-admin": "^13.4.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",
     "vuexfire": "^3.2.5"
