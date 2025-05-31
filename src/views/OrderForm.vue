@@ -246,22 +246,23 @@ export default {
       isSubmitting: false
     }
   },
-  created() {
-    try {
-      const queryData = this.$route.query.data
-      if (queryData) {
-        this.product = JSON.parse(queryData)
-        this.orderDetails.quantity = this.product.quantity || 1
-        console.log('Received product data:', this.product)
-      } else {
-        console.error('No product data received')
-        this.$router.push('/')
-      }
-    } catch (error) {
-      console.error('Error parsing product data:', error)
-      this.$router.push('/')
+created() {
+  try {
+    // Use history.state instead of $route.query
+    const stateData = window.history.state && window.history.state.product;
+    if (stateData) {
+      this.product = stateData;
+      this.orderDetails.quantity = this.product.quantity || 1;
+      console.log('Received product data:', this.product);
+    } else {
+      console.error('No product data received');
+      this.$router.push('/');
     }
-  },
+  } catch (error) {
+    console.error('Error parsing product data:', error);
+    this.$router.push('/');
+  }
+},
   methods: {
     async submitOrder() {
     this.isSubmitting = true;

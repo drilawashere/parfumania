@@ -1,9 +1,8 @@
 <template>
  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
   <div class="container">
-    <a class="navbar-brand brand-logo" href="#">
-      <h4 class="mb-0 font-weight-bold text-gradient">PARFUMANIA</h4>
-      <span class="brand-tagline">Luxury Fragrances</span>
+     <a class="navbar-brand brand-logo" href="/">
+      <img src="@/assets/logopp.svg" alt="Parfumania Logo" style="height: 45px;" />
     </a>
     
     <!-- Mobile toggle button -->
@@ -37,20 +36,7 @@
       </ul>
       
       <!-- Mobile search (will be hidden on desktop, shown in mobile menu) -->
-      <div class="search-box-enhanced mobile-search">
-        <input type="text" class="form-control" placeholder="Search fragrances...">
-        <button class="search-btn">
-          <i class="fas fa-search"></i>
-        </button>
-      </div>
-      
-      <!-- Desktop search (hidden on mobile) -->
-      <div class="search-box-enhanced desktop-search">
-        <input type="text" class="form-control" placeholder="Search fragrances...">
-        <button class="search-btn">
-          <i class="fas fa-search"></i>
-        </button>
-      </div>
+  
     </div>
   </div>
 </nav>
@@ -482,10 +468,10 @@ export default {
       quantity: this.quantity || 1
     }
     
-    this.$router.push({
-      name: 'OrderForm',
-      query: { data: JSON.stringify(productData) }  // Changed from params to query
-    })
+  this.$router.push({
+  name: 'OrderForm',
+  state: { product: productData }
+})
   },
     toggleWishlist() {
       this.isInWishlist = !this.isInWishlist

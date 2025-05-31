@@ -7,9 +7,8 @@
 <!-- Main Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
   <div class="container">
-    <a class="navbar-brand brand-logo" href="#">
-      <h4 class="mb-0 font-weight-bold text-gradient">PARFUMANIA</h4>
-      <span class="brand-tagline">Luxury Fragrances</span>
+     <a class="navbar-brand brand-logo" href="/">
+      <img src="@/assets/logopp.svg" alt="Parfumania Logo" style="height: 45px;" />
     </a>
     
     <!-- Mobile toggle button -->
@@ -44,19 +43,52 @@
       
       <!-- Mobile search (will be hidden on desktop, shown in mobile menu) -->
       <div class="search-box-enhanced mobile-search">
-        <input type="text" class="form-control" placeholder="Search fragrances...">
-        <button class="search-btn">
-          <i class="fas fa-search"></i>
-        </button>
-      </div>
-      
-      <!-- Desktop search (hidden on mobile) -->
-      <div class="search-box-enhanced desktop-search">
-        <input type="text" class="form-control" placeholder="Search fragrances...">
-        <button class="search-btn">
-          <i class="fas fa-search"></i>
-        </button>
-      </div>
+  <input
+    type="text"
+    class="form-control"
+    placeholder="Search fragrances..."
+    v-model="searchQuery"
+    @keyup.enter="handleSearch"
+    @focus="searchFocused = true"
+    @blur="() => setTimeout(() => searchFocused = false, 200)"
+  >
+  <button class="search-btn" @click="handleSearch">
+    <i class="fas fa-search"></i>
+  </button>
+  <ul v-if="searchQuery && searchFocused && liveSearchResults.length" class="search-dropdown">
+    <li v-for="product in liveSearchResults" :key="product.id">
+      <router-link :to="`/product/${product.id}`" @click.native="searchFocused = false">
+        <img :src="product.imageUrl" alt="" class="dropdown-thumb" />
+        {{ product.title }}
+      </router-link>
+    </li>
+    <li v-if="liveSearchResults.length === 0" class="no-results">No results found.</li>
+  </ul>
+</div>
+
+<div class="search-box-enhanced desktop-search">
+  <input
+    type="text"
+    class="form-control"
+    placeholder="Search fragrances..."
+    v-model="searchQuery"
+    @keyup.enter="handleSearch"
+    @focus="searchFocused = true"
+    @blur="() => setTimeout(() => searchFocused = false, 200)"
+  >
+  <button class="search-btn" @click="handleSearch">
+    <i class="fas fa-search"></i>
+  </button>
+  <ul v-if="searchQuery && searchFocused && liveSearchResults.length" class="search-dropdown">
+    <li v-for="product in liveSearchResults" :key="product.id">
+      <router-link :to="`/product/${product.id}`" @click.native="searchFocused = false">
+        <img :src="product.imageUrl" alt="" class="dropdown-thumb" />
+        {{ product.title }}
+      </router-link>
+    </li>
+    <li v-if="liveSearchResults.length === 0" class="no-results">No results found.</li>
+  </ul>
+</div>
     </div>
   </div>
 </nav>
@@ -72,8 +104,8 @@
               <h1 class="hero-title">Bashkohuni me bukurinë</h1>
               <p class="hero-subtitle">Zbuloni koleksionet tona të parfumeve të luksit dhe gjeni aromën tuaj të përsosur</p>
               <div class="hero-buttons">
-                <button class="btn btn-primary-enhanced me-3">SHOP NOW</button>
-                <button class="btn btn-outline-light-enhanced">VIEW COLLECTION</button>
+                <router-link to="/categories" class="btn btn-primary-enhanced me-3">SHOP NOW</router-link>
+                <router-link to="/categories" class="btn btn-outline-light-enhanced">VIEW COLLECTION</router-link>
               </div>
             </div>
           </div>
@@ -93,9 +125,7 @@
             <div class="category-card-enhanced">
               <div class="category-image-wrapper">
               <img :src="categoryImages[i]" alt="Perfume Category" class="category-image" />
-                <div class="category-overlay">
-                  <button class="btn btn-sm btn-light">Explore</button>
-                </div>
+                
               </div>
               <div class="category-info">
                 <h6 class="category-title">
@@ -107,10 +137,10 @@
                 <p class="category-price">
                   Starting from 
                   <span class="price-highlight">
-                    <span v-if="i === 0">120 €</span>
-                    <span v-else-if="i === 1">149 €</span>
-                    <span v-else-if="i === 2">90 €</span>
-                    <span v-else>59 €</span>
+                    <span v-if="i === 0">€39.99 €</span>
+                    <span v-else-if="i === 1">€39.99</span>
+                    <span v-else-if="i === 2">€39.99</span>
+                    <span v-else>€39.99</span>
                   </span>
                 </p>
               </div>
@@ -277,7 +307,7 @@
                   <span>Long Lasting</span>
                 </div>
               </div>
-              <button class="btn btn-primary-enhanced mt-4">VIEW COLLECTION</button>
+<router-link to="/categories?category=XERIOEFF" class="btn btn-primary-enhanced mt-4">VIEW COLLECTION</router-link>
             </div>
           </div>
         </div>
@@ -396,13 +426,11 @@
           <div class="row g-4">
             <div class="col-md-3 col-sm-6 mb-4">
               <div class="footer-section">
-                <h5 class="footer-title">PARFUMANIA</h5>
-                <p class="footer-description">Discover luxury fragrances that define your personality. We offer premium perfumes for every occasion and style.</p>
+                 <a class="navbar-brand brand-logo" href="/">
+      <img src="@/assets/favicon.svg" alt="Parfumania Logo" style="height: 50px;" />
+    </a>
                 <div class="social-icons-enhanced">
-                  <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                  <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                  <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                  <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                  <a href="https://www.instagram.com/parfumania_ks/" class="social-link"><i class="fab fa-instagram"></i></a>
                 </div>
               </div>
             </div>
@@ -412,9 +440,6 @@
                 <ul class="footer-links">
                   <li><a href="#">About Us</a></li>
                   <li><a href="#">Contact Us</a></li>
-                  <li><a href="#">Size Guide</a></li>
-                  <li><a href="#">Shipping Info</a></li>
-                  <li><a href="#">Returns</a></li>
                 </ul>
               </div>
             </div>
@@ -427,26 +452,25 @@
                   <li><a href="#">Men's Fragrances</a></li>
                   <li><a href="#">Women's Fragrances</a></li>
                   <li><a href="#">Unisex</a></li>
-                  <li><a href="#">Gift Sets</a></li>
                 </ul>
               </div>
             </div>
             <div class="col-md-3 col-sm-12 mb-4">
               <div class="footer-section">
-                <h5 class="footer-title">CONTACT INFO</h5>
+                <!-- <h5 class="footer-title">CONTACT INFO</h5> -->
                 <div class="contact-info-enhanced">
-                  <div class="contact-item">
+                  <!-- <div class="contact-item">
                     <i class="fas fa-map-marker-alt"></i>
                     <span>E shtoj ma vone<br>E shtoj ma vone</span>
                   </div>
                   <div class="contact-item">
                     <i class="fas fa-phone-alt"></i>
                     <span>+355 E shtoj ma vone</span>
-                  </div>
-                  <div class="contact-item">
+                  </div> -->
+                  <!-- <div class="contact-item">
                     <i class="fas fa-envelope"></i>
                     <span>info@parfumania.com</span>
-                  </div>
+                  </div> -->
                   <!-- <div class="contact-item">
                     <i class="fas fa-clock"></i>
                     <span>Mon-Fri: 9:00-18:00<br>Sat-Sun: 10:00-16:00</span>
@@ -470,8 +494,6 @@
                 <div class="payment-icons">
                   <i class="fab fa-cc-visa"></i>
                   <i class="fab fa-cc-mastercard"></i>
-                  <i class="fab fa-cc-paypal"></i>
-                  <i class="fab fa-cc-apple-pay"></i>
                 </div>
               </div>
             </div>
@@ -499,7 +521,11 @@ export default {
       heroImg,
       bestSellingProducts: [],
       newProducts: [],
+      allProducts: [],
       loading: true,
+          searchQuery: '',
+              searchFocused: false,
+
        allBestSellingProducts: [], // Store all best-selling products
     allNewProducts: [], // Store all new products
     showAllBestSelling: false, // Toggle for showing all best-selling
@@ -516,6 +542,15 @@ export default {
   },
   async created() {
   try {
+     const allProductsQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'))
+    const allProductsSnapshot = await getDocs(allProductsQuery)
+    this.allProducts = allProductsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+    
+    // Filter for best-selling products
+    this.allBestSellingProducts = this.allProducts.filter(product => product.bestSelling === true)
+    
+    // Filter for new products
+    this.allNewProducts = this.allProducts.filter(product => product.new === true)
     // Fetch best-selling products (where bestselling === true)
     const bestSellingQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'))
     const bestSellingSnapshot = await getDocs(bestSellingQuery)
@@ -539,6 +574,18 @@ export default {
   }
 },
 computed: {
+  liveSearchResults() {
+    if (!this.searchQuery) return [];
+    const q = this.searchQuery.toLowerCase();
+    
+    // Search through ALL products instead of just best selling and new
+    return this.allProducts.filter(
+      p =>
+        (p.title && p.title.toLowerCase().includes(q)) ||
+        (p.category && p.category.toLowerCase().includes(q)) ||
+        (p.description && p.description.toLowerCase().includes(q))
+    ).slice(0, 8); // Show up to 8 results in dropdown
+  },
   // Best Selling Pagination
   totalBestSellingPages() {
     return Math.ceil(this.allBestSellingProducts.length / this.bestSellingItemsPerPage);
@@ -567,6 +614,34 @@ computed: {
     if (total > 1 && !pages.includes(total)) pages.push(total);
     
     return pages;
+  },
+  filteredBestSellingProducts() {
+    if (!this.searchQuery) return this.allBestSellingProducts;
+    const q = this.searchQuery.toLowerCase();
+    return this.allBestSellingProducts.filter(
+      p =>
+        (p.title && p.title.toLowerCase().includes(q)) ||
+        (p.category && p.category.toLowerCase().includes(q))
+    );
+  },
+  filteredNewProducts() {
+    if (!this.searchQuery) return this.allNewProducts;
+    const q = this.searchQuery.toLowerCase();
+    return this.allNewProducts.filter(
+      p =>
+        (p.title && p.title.toLowerCase().includes(q)) ||
+        (p.category && p.category.toLowerCase().includes(q))
+    );
+  },
+    displayedBestSelling() {
+    const start = (this.currentBestSellingPage - 1) * this.bestSellingItemsPerPage;
+    const end = start + this.bestSellingItemsPerPage;
+    return this.filteredBestSellingProducts.slice(start, end);
+  },
+  displayedNewProducts() {
+    const start = (this.currentNewProductsPage - 1) * this.newProductsItemsPerPage;
+    const end = start + this.newProductsItemsPerPage;
+    return this.filteredNewProducts.slice(start, end);
   },
   
   // New Products Pagination
@@ -597,6 +672,16 @@ computed: {
   }
 },
 methods: {
+    handleSearch() {
+         if (this.searchQuery.trim()) {
+      // Navigate to categories page with search query
+      this.$router.push({
+        path: '/categories',
+        query: { search: this.searchQuery.trim() }
+      });
+      this.searchFocused = false;
+    }
+  },
   // Best Selling Pagination Methods
        closeMobileMenu() {
       bsCollapse.hide();
@@ -652,6 +737,59 @@ methods: {
 </script>
 
 <style scoped>
+/* ...existing code... */
+.search-dropdown {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  z-index: 100;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.search-dropdown li {
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-dropdown li:not(:last-child) {
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.search-dropdown li .dropdown-thumb {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-right: 8px;
+}
+
+.search-dropdown li a {
+  color: #333;
+  text-decoration: none;
+  flex: 1;
+}
+
+.search-dropdown li a:hover {
+  color: #A62C2C;
+}
+
+.no-results {
+  color: #999;
+  text-align: center;
+  padding: 12px 0;
+}
+/* ...existing code... */
 /* Enhanced Global Styles */
 .parfumania-app {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -1096,7 +1234,7 @@ methods: {
   margin-bottom: 15px;
   border-radius: 15px;
   overflow: hidden;
-  background: #f8f9fa;
+  background: #ffffff;
 }
 
 .product-image-enhanced {

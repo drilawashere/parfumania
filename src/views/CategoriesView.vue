@@ -3,9 +3,8 @@
        <!-- Main Navigation -->
    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
   <div class="container">
-    <a class="navbar-brand brand-logo" href="#">
-      <h4 class="mb-0 font-weight-bold text-gradient">PARFUMANIA</h4>
-      <span class="brand-tagline">Luxury Fragrances</span>
+    <a class="navbar-brand brand-logo" href="/">
+      <img src="@/assets/logopp.svg" alt="Parfumania Logo" style="height: 45px;" />
     </a>
     
     <!-- Mobile toggle button -->
@@ -39,19 +38,54 @@
       </ul>
       
       <!-- Mobile search (will be hidden on desktop, shown in mobile menu) -->
+    <!-- Mobile search (will be hidden on desktop, shown in mobile menu) -->
       <div class="search-box-enhanced mobile-search">
-        <input type="text" class="form-control" placeholder="Search fragrances...">
-        <button class="search-btn">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search fragrances..."
+          v-model="navSearchQuery"
+          @keyup.enter="handleNavSearch"
+          @focus="navSearchFocused = true"
+          @blur="() => setTimeout(() => navSearchFocused = false, 200)"
+        >
+        <button class="search-btn" @click="handleNavSearch">
           <i class="fas fa-search"></i>
         </button>
+        <ul v-if="navSearchQuery && navSearchFocused && liveSearchResults.length" class="search-dropdown">
+          <li v-for="product in liveSearchResults" :key="product.id">
+            <router-link :to="`/product/${product.id}`" @click.native="navSearchFocused = false">
+              <img :src="product.imageUrl" alt="" class="dropdown-thumb" />
+              {{ product.title }}
+            </router-link>
+          </li>
+          <li v-if="liveSearchResults.length === 0" class="no-results">No results found.</li>
+        </ul>
       </div>
       
       <!-- Desktop search (hidden on mobile) -->
       <div class="search-box-enhanced desktop-search">
-        <input type="text" class="form-control" placeholder="Search fragrances...">
-        <button class="search-btn">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search fragrances..."
+          v-model="navSearchQuery"
+          @keyup.enter="handleNavSearch"
+          @focus="navSearchFocused = true"
+          @blur="() => setTimeout(() => navSearchFocused = false, 200)"
+        >
+        <button class="search-btn" @click="handleNavSearch">
           <i class="fas fa-search"></i>
         </button>
+        <ul v-if="navSearchQuery && navSearchFocused && liveSearchResults.length" class="search-dropdown">
+          <li v-for="product in liveSearchResults" :key="product.id">
+            <router-link :to="`/product/${product.id}`" @click.native="navSearchFocused = false">
+              <img :src="product.imageUrl" alt="" class="dropdown-thumb" />
+              {{ product.title }}
+            </router-link>
+          </li>
+          <li v-if="liveSearchResults.length === 0" class="no-results">No results found.</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -72,7 +106,7 @@
         
         <!-- Search and Filter Controls -->
         <div class="filter-controls">
-          <div class="search-container">
+          <!-- <div class="search-container">
             <i class="fas fa-search search-icon"></i>
             <input 
               v-model="searchTerm" 
@@ -81,7 +115,7 @@
               class="search-input"
               @input="filterCategories"
             />
-          </div>
+          </div> -->
           
           <div class="view-toggle">
             <button 
@@ -231,59 +265,63 @@ export default {
       basicCategories: ['Parfume', 'Kremra', 'Deodorant'],
       
       // All brand categories with Font Awesome icons
-   brandCategories: [
-  { name: 'Alien Miglei' },
-  { name: 'Amouage' },
-  { name: 'Armani' },
-  { name: 'Boss' },
-  { name: 'Burberry' },
-  { name: 'Burbery' },
-  { name: 'Bvlgari' },
-  { name: 'Calvin Klein' },
-  { name: 'Casamorati' },
-  { name: 'Chanel' },
-  { name: 'Chloe' },
-  { name: 'Dior' },
-  { name: 'Dolce Gabana' },
-  { name: 'Gisada' },
-  { name: 'Givenchy' },
-  { name: 'Gucci' },
-  { name: 'Initio' },
-  { name: 'JPG' },
-  { name: 'Kayali' },
-  { name: 'Lancome' },
-  { name: 'Lataffa' },
-  { name: 'Louis Vuitton' },
-  { name: 'Maison Francis Kurkdjian' },
-  { name: 'Mancera' },
-  { name: 'Memo' },
-  { name: 'Montale' },
-  { name: 'Narciso Rodriguez' },
-  { name: 'Nishane' },
-  { name: 'Paco Rabane' },
-  { name: 'Paco Rabanne' },
-  { name: 'Parfums de Marly' },
-  { name: 'Prada' },
-  { name: 'Roberto Cavalli' },
-  { name: 'Scandal' },
-  { name: 'Sol de Janeiro' },
-  { name: 'Tiziana Terenzi' },
-  { name: 'Tom Ford' },
-  { name: 'Valentino' },
-  { name: 'Victoria Secret' },
-  { name: 'XERIOEFF' },
-  { name: 'YSL' }
-],
-
+      brandCategories: [
+        { name: 'Alien Miglei' },
+        { name: 'Amouage' },
+        { name: 'Armani' },
+        { name: 'Boss' },
+        { name: 'Burberry' },
+        { name: 'Burbery' },
+        { name: 'Bvlgari' },
+        { name: 'Calvin Klein' },
+        { name: 'Casamorati' },
+        { name: 'Chanel' },
+        { name: 'Chloe' },
+        { name: 'Dior' },
+        { name: 'Dolce Gabana' },
+        { name: 'Gisada' },
+        { name: 'Givenchy' },
+        { name: 'Gucci' },
+        { name: 'Initio' },
+        { name: 'JPG' },
+        { name: 'Kayali' },
+        { name: 'Lancome' },
+        { name: 'Lataffa' },
+        { name: 'Louis Vuitton' },
+        { name: 'Maison Francis Kurkdjian' },
+        { name: 'Mancera' },
+        { name: 'Memo' },
+        { name: 'Montale' },
+        { name: 'Narciso Rodriguez' },
+        { name: 'Nishane' },
+        { name: 'Paco Rabane' },
+        { name: 'Paco Rabanne' },
+        { name: 'Parfums de Marly' },
+        { name: 'Prada' },
+        { name: 'Roberto Cavalli' },
+        { name: 'Scandal' },
+        { name: 'Sol de Janeiro' },
+        { name: 'Tiziana Terenzi' },
+        { name: 'Tom Ford' },
+        { name: 'Valentino' },
+        { name: 'Victoria Secret' },
+        { name: 'XERIOEFF' },
+        { name: 'YSL' }
+      ],
       
       selectedCategory: '',
       products: [],
+      allProductsCache: [], // Cache all products for navbar search
       loading: false,
       showAllCategories: false,
       searchTerm: '',
       filteredBrands: [],
       currentPage: 1,
-      brandsPerPage: 12
+      brandsPerPage: 12,
+      
+      // Add search functionality properties
+      navSearchQuery: '', // For navbar search
+      navSearchFocused: false
     }
   },
   
@@ -296,39 +334,109 @@ export default {
     
     totalPages() {
       return Math.ceil(this.filteredBrands.length / this.brandsPerPage)
+    },
+    
+    // Search results for navbar using cached products
+    liveSearchResults() {
+      if (!this.navSearchQuery) return [];
+      const q = this.navSearchQuery.toLowerCase();
+      
+      return this.allProductsCache.filter(
+        p =>
+          (p.title && p.title.toLowerCase().includes(q)) ||
+          (p.category && p.category.toLowerCase().includes(q)) ||
+          (p.description && p.description.toLowerCase().includes(q))
+      ).slice(0, 8); // Show up to 8 results in dropdown
     }
   },
   
   created() {
     this.filteredBrands = [...this.brandCategories]
+    
+    // Check for category query parameter
+    const categoryFromQuery = this.$route.query.category
+    if (categoryFromQuery) {
+      this.selectedCategory = categoryFromQuery
+    }
+    
+    // Check for search query parameter
+    const searchFromQuery = this.$route.query.search
+    if (searchFromQuery) {
+      this.searchTerm = searchFromQuery
+      this.filterCategories()
+    }
+    
     this.fetchProducts()
   },
   
   methods: {
-      closeMobileMenu() {
-      bsCollapse.hide();
-
-  },
+    closeMobileMenu() {
+      const navbarCollapse = document.getElementById('navbarNav')
+      if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+        const bsCollapse = new bootstrap.Collapse(navbarCollapse)
+        bsCollapse.hide()
+      }
+    },
+    
+    // Add navbar search methods
+    handleNavSearch() {
+      if (this.navSearchQuery.trim()) {
+        // Update the main search term and filter
+        this.searchTerm = this.navSearchQuery.trim()
+        this.selectedCategory = '' // Clear category filter when searching
+        this.filterCategories()
+        this.fetchProducts()
+        this.navSearchFocused = false
+        
+        // Update URL with search query
+        this.$router.replace({
+          path: '/categories',
+          query: { search: this.searchTerm }
+        })
+        
+        // Scroll to products section
+        this.$nextTick(() => {
+          const productsSection = document.querySelector('.products-section')
+          if (productsSection) {
+            productsSection.scrollIntoView({ behavior: 'smooth' })
+          }
+        })
+      }
+    },
+    
     async fetchProducts() {
       this.loading = true
       try {
         let q
-        if (this.selectedCategory) {
+        
+        // Always fetch all products first for navbar search cache
+        if (!this.allProductsCache.length) {
+          const allQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'))
+          const allSnapshot = await getDocs(allQuery)
+          this.allProductsCache = allSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+        }
+        
+        // If there's a search term, filter from cache
+        if (this.searchTerm) {
+          const searchLower = this.searchTerm.toLowerCase()
+          this.products = this.allProductsCache.filter(product =>
+            (product.title && product.title.toLowerCase().includes(searchLower)) ||
+            (product.category && product.category.toLowerCase().includes(searchLower)) ||
+            (product.description && product.description.toLowerCase().includes(searchLower))
+          )
+        } else if (this.selectedCategory) {
           console.log('Fetching products for category:', this.selectedCategory)
-          q = query(
-            collection(db, 'products'),
-            where('category', '==', this.selectedCategory),
-            orderBy('createdAt', 'desc')
+          // Filter from cache instead of making new query
+          this.products = this.allProductsCache.filter(product => 
+            product.category === this.selectedCategory
           )
         } else {
-          console.log('Fetching all products')
-          q = query(collection(db, 'products'), orderBy('createdAt', 'desc'))
+          console.log('Showing all products')
+          this.products = [...this.allProductsCache]
         }
-        const querySnapshot = await getDocs(q)
-        this.products = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }))
         console.log('Fetched products:', this.products)
       } catch (err) {
         console.error('Gabim gjatë marrjes së produkteve:', err)
@@ -339,7 +447,20 @@ export default {
     
     selectCategory(cat) {
       this.selectedCategory = cat
+      this.searchTerm = '' // Clear search when selecting category
+      this.navSearchQuery = '' // Clear navbar search
       this.fetchProducts()
+      
+      // Update URL
+      if (cat) {
+        this.$router.replace({
+          path: '/categories',
+          query: { category: cat }
+        })
+      } else {
+        this.$router.replace('/categories')
+      }
+      
       // Scroll to products section
       this.$nextTick(() => {
         const productsSection = document.querySelector('.products-section')
@@ -1322,4 +1443,60 @@ export default {
     padding: 0.75rem 0;
   }
 }
+/* Add search dropdown styles */
+.search-dropdown {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  z-index: 100;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.search-dropdown li {
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-dropdown li:not(:last-child) {
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.search-dropdown li .dropdown-thumb {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-right: 8px;
+}
+
+.search-dropdown li a {
+  color: #333;
+  text-decoration: none;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-dropdown li a:hover {
+  color: #A62C2C;
+}
+
+.no-results {
+  color: #999;
+  text-align: center;
+  padding: 12px 0;
+}
+
 </style>
