@@ -696,6 +696,8 @@ import { db, storage, auth } from '@/firebase'
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore'
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import productService from '@/services/productService'
+
 
 export default {
   data() {
@@ -826,65 +828,58 @@ export default {
         throw error
       }
     },
-    async addProduct() {
-      try {
-        if (!this.validateForm()) return
+   async addProduct() {
+  try {
+    if (!this.validateForm()) return
 
-        if (this.editingProduct) {
-          await this.updateProduct()
-          return
-        }
-        
-        const downloadURL = await this.uploadImage()
-        if (!downloadURL) {
-          alert('Error uploading image!')
-          return
-        }
-        
-        this.product.imageUrl = downloadURL
-        
-        const productData = {
-          title: this.product.title,
-          description: this.product.description,
-          price: Number(this.product.price),
-          category: this.product.category,
-          imageUrl: this.product.imageUrl,
-          discount: this.product.discount ? Number(this.product.discount) : 0,
-          new: Boolean(this.product.new),
-          bestSelling: Boolean(this.product.bestSelling),
-          createdAt: Timestamp.now(),
-        }
+    if (this.editingProduct) {
+      await this.updateProduct()
+      return
+    }
+    
+    const downloadURL = await this.uploadImage()
+    if (!downloadURL) {
+      alert('Error uploading image!')
+      return
+    }
+    
+    this.product.imageUrl = downloadURL
+    
+    const productData = {
+      title: this.product.title,
+      description: this.product.description,
+      price: Number(this.product.price),
+      category: this.product.category,
+      imageUrl: this.product.imageUrl,
+      discount: this.product.discount ? Number(this.product.discount) : 0,
+      new: Boolean(this.product.new),
+      bestSelling: Boolean(this.product.bestSelling),
+      createdAt: Timestamp.now(),
+    }
 
-        console.log('Adding product:', productData)
-        
-        const docRef = await addDoc(collection(db, 'products'), productData)
-        console.log('Product added with ID:', docRef.id)
-        
-        alert('Product added successfully!')
-        
-        this.resetForm()
-        await this.fetchProducts()
-      } catch (err) {
-        console.error('Error adding product:', err)
-        alert('Error adding product: ' + err.message)
-        this.uploading = false
-      }
-    },
-    async fetchProducts() {
+    console.log('Adding product:', productData)
+    
+    const docRef = await addDoc(collection(db, 'products'), productData)
+    console.log('Product added with ID:', docRef.id)
+    
+    alert('Product added successfully!')
+    
+    // Clear cache after adding product
+    productService.clearCache()
+    
+    this.resetForm()
+    await this.fetchProducts()
+  } catch (err) {
+    console.error('Error adding product:', err)
+    alert('Error adding product: ' + err.message)
+    this.uploading = false
+  }
+},
+       async fetchProducts() {
       this.loading = true
       try {
-        console.log('Fetching products...')
-        const querySnapshot = await getDocs(collection(db, 'products'))
-        console.log('Query snapshot size:', querySnapshot.size)
-        
-        this.products = []
-        querySnapshot.forEach((doc) => {
-          const data = doc.data()
-          console.log('Product data:', { id: doc.id, ...data })
-          this.products.push({ id: doc.id, ...data })
-        })
-        
-        console.log('Total products loaded:', this.products.length)
+        // Force refresh for admin to get latest data
+        this.products = await productService.getProducts(true)
       } catch (err) {
         console.error('Error fetching products:', err)
         alert('Error loading products: ' + err.message)
@@ -911,53 +906,60 @@ export default {
         document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' })
 
     },
-    async updateProduct() {
-      try {
-        if (!this.editingProduct) return
+async updateProduct() {
+  try {
+    if (!this.editingProduct) return
 
-        const productRef = doc(db, 'products', this.editingProduct)
+    const productRef = doc(db, 'products', this.editingProduct)
 
-        if (this.imageFile) {
-          const downloadURL = await this.uploadImage()
-          this.product.imageUrl = downloadURL
-        }
+    if (this.imageFile) {
+      const downloadURL = await this.uploadImage()
+      this.product.imageUrl = downloadURL
+    }
 
-        const updateData = {
-          title: this.product.title,
-          description: this.product.description,
-          price: Number(this.product.price),
-          category: this.product.category,
-          imageUrl: this.product.imageUrl,
-          discount: this.product.discount ? Number(this.product.discount) : 0,
-          new: Boolean(this.product.new),
-          bestSelling: Boolean(this.product.bestSelling),
-        }
+    const updateData = {
+      title: this.product.title,
+      description: this.product.description,
+      price: Number(this.product.price),
+      category: this.product.category,
+      imageUrl: this.product.imageUrl,
+      discount: this.product.discount ? Number(this.product.discount) : 0,
+      new: Boolean(this.product.new),
+      bestSelling: Boolean(this.product.bestSelling),
+    }
 
-        console.log('Updating product:', updateData)
-        await updateDoc(productRef, updateData)
-        alert('Product updated successfully!')
-        
-        this.cancelEdit()
-        await this.fetchProducts()
-      } catch (err) {
-        console.error('Error updating product:', err)
-        alert('Error updating product: ' + err.message)
-      }
-    },
-    async deleteProduct(productId) {
-      if (!confirm('Are you sure you want to delete this product?')) return
+    console.log('Updating product:', updateData)
+    await updateDoc(productRef, updateData)
+    alert('Product updated successfully!')
+    
+    // Clear cache after updating
+    productService.clearCache()
+    
+    this.cancelEdit()
+    await this.fetchProducts()
+  } catch (err) {
+    console.error('Error updating product:', err)
+    alert('Error updating product: ' + err.message)
+  }
+},
+   async deleteProduct(productId) {
+  if (!confirm('Are you sure you want to delete this product?')) return
 
-      try {
-        console.log('Deleting product:', productId)
-        const productRef = doc(db, 'products', productId)
-        await deleteDoc(productRef)
-        alert('Product deleted successfully!')
-        await this.fetchProducts()
-      } catch (err) {
-        console.error('Error deleting product:', err)
-        alert('Error deleting product: ' + err.message)
-      }
-    },
+  try {
+    console.log('Deleting product:', productId)
+    const productRef = doc(db, 'products', productId)
+    await deleteDoc(productRef)
+    alert('Product deleted successfully!')
+    
+    // Clear cache after deleting
+    productService.clearCache()
+    
+    await this.fetchProducts()
+  } catch (err) {
+    console.error('Error deleting product:', err)
+    alert('Error deleting product: ' + err.message)
+  }
+},
     cancelEdit() {
       this.editingProduct = null
       this.resetForm()

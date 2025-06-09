@@ -257,6 +257,8 @@
 <script>
 import { db } from '@/firebase'
 import { collection, getDocs, query, where, orderBy } from 'firebase/firestore'
+import productService from '@/services/productService'
+
 
 export default {
   data() {
@@ -337,36 +339,27 @@ export default {
     },
     
     // Search results for navbar using cached products
-    liveSearchResults() {
+      liveSearchResults() {
       if (!this.navSearchQuery) return [];
-      const q = this.navSearchQuery.toLowerCase();
-      
-      return this.allProductsCache.filter(
-        p =>
-          (p.title && p.title.toLowerCase().includes(q)) ||
-          (p.category && p.category.toLowerCase().includes(q)) ||
-          (p.description && p.description.toLowerCase().includes(q))
-      ).slice(0, 8); // Show up to 8 results in dropdown
-    }
+      return productService.searchProducts(this.navSearchQuery).slice(0, 8);
+    },
   },
   
-  created() {
+  async created() {
     this.filteredBrands = [...this.brandCategories]
     
-    // Check for category query parameter
     const categoryFromQuery = this.$route.query.category
     if (categoryFromQuery) {
       this.selectedCategory = categoryFromQuery
     }
     
-    // Check for search query parameter
     const searchFromQuery = this.$route.query.search
     if (searchFromQuery) {
       this.searchTerm = searchFromQuery
       this.filterCategories()
     }
     
-    this.fetchProducts()
+    await this.fetchProducts()
   },
   
   methods: {
@@ -404,42 +397,18 @@ export default {
       }
     },
     
-    async fetchProducts() {
+       async fetchProducts() {
       this.loading = true
       try {
-        let q
-        
-        // Always fetch all products first for navbar search cache
-        if (!this.allProductsCache.length) {
-          const allQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'))
-          const allSnapshot = await getDocs(allQuery)
-          this.allProductsCache = allSnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          }))
-        }
-        
-        // If there's a search term, filter from cache
         if (this.searchTerm) {
-          const searchLower = this.searchTerm.toLowerCase()
-          this.products = this.allProductsCache.filter(product =>
-            (product.title && product.title.toLowerCase().includes(searchLower)) ||
-            (product.category && product.category.toLowerCase().includes(searchLower)) ||
-            (product.description && product.description.toLowerCase().includes(searchLower))
-          )
+          this.products = await productService.searchProducts(this.searchTerm)
         } else if (this.selectedCategory) {
-          console.log('Fetching products for category:', this.selectedCategory)
-          // Filter from cache instead of making new query
-          this.products = this.allProductsCache.filter(product => 
-            product.category === this.selectedCategory
-          )
+          this.products = await productService.getProductsByCategory(this.selectedCategory)
         } else {
-          console.log('Showing all products')
-          this.products = [...this.allProductsCache]
+          this.products = await productService.getProducts()
         }
-        console.log('Fetched products:', this.products)
       } catch (err) {
-        console.error('Gabim gjatë marrjes së produkteve:', err)
+        console.error('Error fetching products:', err)
       } finally {
         this.loading = false
       }

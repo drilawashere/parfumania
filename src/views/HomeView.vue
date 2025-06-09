@@ -203,7 +203,7 @@
       <span class="badge-bestseller">Bestseller</span>
     </div>
     <div class="product-image-container-enhanced">
-      <img :src="product.imageUrl" :alt="product.title" class="product-image-enhanced" />
+      <img :src="product.imageUrl" loading="lazy" :alt="product.title" class="product-image-enhanced" />
     </div>
     <div class="product-details-enhanced">
       <h6 class="product-name-enhanced mb-2">{{ product.title }}</h6>
@@ -507,11 +507,13 @@
 <script>
 import { db } from '@/firebase'
 import { collection, getDocs, query, orderBy } from 'firebase/firestore'
-import heroImg from '@/assets/sdsd.jpg'
+import heroImg from '@/assets/background.jpeg'
 import img0 from '@/assets/FullSizeRender.jpeg'
 import img1 from '@/assets/soul1.jpeg'
 import img2 from '@/assets/soul2.jpeg'
 import img3 from '@/assets/soul3.jpeg'
+import productService from '@/services/productService'
+
 
 export default {
   name: 'ParfumUmana',
@@ -540,33 +542,12 @@ export default {
     newProductsItemsPerPage: 6,
     }
   },
-  async created() {
+async created() {
   try {
-     const allProductsQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'))
-    const allProductsSnapshot = await getDocs(allProductsQuery)
-    this.allProducts = allProductsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-    
-    // Filter for best-selling products
-    this.allBestSellingProducts = this.allProducts.filter(product => product.bestSelling === true)
-    
-    // Filter for new products
-    this.allNewProducts = this.allProducts.filter(product => product.new === true)
-    // Fetch best-selling products (where bestselling === true)
-    const bestSellingQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'))
-    const bestSellingSnapshot = await getDocs(bestSellingQuery)
-    this.allBestSellingProducts = bestSellingSnapshot.docs
-      .map(doc => ({ id: doc.id, ...doc.data() }))
-      .filter(product => product.bestSelling === true)
-    
-    // Remove the .slice(0, 6) limit since we're handling it in computed properties
-
-    // Fetch new products
-    const newProductsQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'))
-    const newProductsSnapshot = await getDocs(newProductsQuery)
-    this.allNewProducts = newProductsSnapshot.docs
-      .map(doc => ({ id: doc.id, ...doc.data() }))
-      .filter(product => product.new === true)
-      
+    // Single fetch for all products using the service
+    this.allProducts = await productService.getProducts()
+    this.allBestSellingProducts = await productService.getBestSellingProducts()
+    this.allNewProducts = await productService.getNewProducts()
   } catch (err) {
     console.error('Error fetching products:', err)
   } finally {
@@ -576,83 +557,67 @@ export default {
 computed: {
   liveSearchResults() {
     if (!this.searchQuery) return [];
-    const q = this.searchQuery.toLowerCase();
-    
-    // Search through ALL products instead of just best selling and new
-    return this.allProducts.filter(
-      p =>
-        (p.title && p.title.toLowerCase().includes(q)) ||
-        (p.category && p.category.toLowerCase().includes(q)) ||
-        (p.description && p.description.toLowerCase().includes(q))
-    ).slice(0, 8); // Show up to 8 results in dropdown
+    return productService.searchProducts(this.searchQuery).slice(0, 8);
   },
-  // Best Selling Pagination
-  totalBestSellingPages() {
-    return Math.ceil(this.allBestSellingProducts.length / this.bestSellingItemsPerPage);
-  },
-  displayedBestSelling() {
-    const start = (this.currentBestSellingPage - 1) * this.bestSellingItemsPerPage;
-    const end = start + this.bestSellingItemsPerPage;
-    return this.allBestSellingProducts.slice(start, end);
-  },
-  bestSellingPaginationNumbers() {
-    const total = this.totalBestSellingPages;
-    const current = this.currentBestSellingPage;
-    const delta = 2; // Show 2 pages before and after current page
-    
-    let pages = [];
-    
-    // Always show first page
-    if (total > 0) pages.push(1);
-    
-    // Add pages around current page
-    for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
-      if (!pages.includes(i)) pages.push(i);
-    }
-    
-    // Always show last page if more than 1 page
-    if (total > 1 && !pages.includes(total)) pages.push(total);
-    
-    return pages;
-  },
+  
+  // Best Selling Products
   filteredBestSellingProducts() {
     if (!this.searchQuery) return this.allBestSellingProducts;
     const q = this.searchQuery.toLowerCase();
     return this.allBestSellingProducts.filter(
-      p =>
-        (p.title && p.title.toLowerCase().includes(q)) ||
-        (p.category && p.category.toLowerCase().includes(q))
+      p => (p.title && p.title.toLowerCase().includes(q)) ||
+           (p.category && p.category.toLowerCase().includes(q))
     );
   },
-  filteredNewProducts() {
-    if (!this.searchQuery) return this.allNewProducts;
-    const q = this.searchQuery.toLowerCase();
-    return this.allNewProducts.filter(
-      p =>
-        (p.title && p.title.toLowerCase().includes(q)) ||
-        (p.category && p.category.toLowerCase().includes(q))
-    );
+  
+  totalBestSellingPages() {
+    return Math.ceil(this.filteredBestSellingProducts.length / this.bestSellingItemsPerPage);
   },
-    displayedBestSelling() {
+  
+  displayedBestSelling() {
     const start = (this.currentBestSellingPage - 1) * this.bestSellingItemsPerPage;
     const end = start + this.bestSellingItemsPerPage;
     return this.filteredBestSellingProducts.slice(start, end);
   },
+  
+  bestSellingPaginationNumbers() {
+    const total = this.totalBestSellingPages;
+    const current = this.currentBestSellingPage;
+    const delta = 2;
+    
+    let pages = [];
+    
+    if (total > 0) pages.push(1);
+    
+    for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
+      if (!pages.includes(i)) pages.push(i);
+    }
+    
+    if (total > 1 && !pages.includes(total)) pages.push(total);
+    
+    return pages;
+  },
+
+  // New Products  
+  filteredNewProducts() {
+    if (!this.searchQuery) return this.allNewProducts;
+    const q = this.searchQuery.toLowerCase();
+    return this.allNewProducts.filter(
+      p => (p.title && p.title.toLowerCase().includes(q)) ||
+           (p.category && p.category.toLowerCase().includes(q))
+    );
+  },
+  
+  totalNewProductsPages() {
+    return Math.ceil(this.filteredNewProducts.length / this.newProductsItemsPerPage);
+  },
+  
   displayedNewProducts() {
     const start = (this.currentNewProductsPage - 1) * this.newProductsItemsPerPage;
     const end = start + this.newProductsItemsPerPage;
     return this.filteredNewProducts.slice(start, end);
   },
   
-  // New Products Pagination
-  totalNewProductsPages() {
-    return Math.ceil(this.allNewProducts.length / this.newProductsItemsPerPage);
-  },
-  displayedNewProducts() {
-    const start = (this.currentNewProductsPage - 1) * this.newProductsItemsPerPage;
-    const end = start + this.newProductsItemsPerPage;
-    return this.allNewProducts.slice(start, end);
-  },
   newProductsPaginationNumbers() {
     const total = this.totalNewProductsPages;
     const current = this.currentNewProductsPage;
@@ -952,7 +917,7 @@ methods: {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 100%);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.3) 100%);
 }
 
 .hero-content-enhanced {
