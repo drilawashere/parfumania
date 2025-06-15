@@ -110,7 +110,6 @@
                         >
                         <label for="phone" class="floating-label">Numri i Telefonit *</label>
                         <div class="input-highlight"></div>
-                        <small class="form-text">Format: +355 69 123 4567</small>
                       </div>
                     </div>
                   </div>
