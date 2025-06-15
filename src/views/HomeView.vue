@@ -203,7 +203,21 @@
       <span class="badge-bestseller">Bestseller</span>
     </div>
     <div class="product-image-container-enhanced">
-      <img :src="product.imageUrl" loading="lazy" :alt="product.title" class="product-image-enhanced" />
+      <!-- Loading spinner overlay -->
+      <div v-if="isImageLoading(product.id)" class="image-loading-overlay">
+        <div class="image-loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+        </div>
+      </div>
+      <img 
+        :src="product.imageUrl" 
+        loading="lazy" 
+        :alt="product.title" 
+        class="product-image-enhanced"
+        @loadstart="handleImageLoadStart(product.id)"
+        @load="handleImageLoad(product.id)"
+        @error="handleImageLoad(product.id)"
+      />
     </div>
     <div class="product-details-enhanced">
       <h6 class="product-name-enhanced mb-2">{{ product.title }}</h6>
@@ -353,7 +367,20 @@
       <span class="badge-discount" v-if="product.discount">-{{ product.discount }}%</span>
     </div>
     <div class="product-image-container-enhanced">
-      <img :src="product.imageUrl" :alt="product.title" class="product-image-enhanced" />
+      <!-- Loading spinner overlay -->
+      <div v-if="isImageLoading(product.id)" class="image-loading-overlay">
+        <div class="image-loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+        </div>
+      </div>
+      <img 
+        :src="product.imageUrl" 
+        :alt="product.title" 
+        class="product-image-enhanced"
+        @loadstart="handleImageLoadStart(product.id)"
+        @load="handleImageLoad(product.id)"
+        @error="handleImageLoad(product.id)"
+      />
     </div>
     <div class="product-details-enhanced">
       <h6 class="product-name-enhanced mb-2">{{ product.title }}</h6>
@@ -540,6 +567,7 @@ export default {
     // Pagination for New Products
     currentNewProductsPage: 1,
     newProductsItemsPerPage: 6,
+    imageLoadingStates: {}
     }
   },
 async created() {
@@ -647,6 +675,17 @@ methods: {
       this.searchFocused = false;
     }
   },
+     handleImageLoadStart(productId) {
+      this.$set(this.imageLoadingStates, productId, true)
+    },
+    
+    handleImageLoad(productId) {
+      this.$set(this.imageLoadingStates, productId, false)
+    },
+    
+    isImageLoading(productId) {
+      return this.imageLoadingStates[productId] === true
+    },
   // Best Selling Pagination Methods
        closeMobileMenu() {
       bsCollapse.hide();
@@ -2139,5 +2178,41 @@ methods: {
   .navbar {
     padding: 0.75rem 0;
   }
+}
+.image-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(248, 249, 250, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  border-radius: 15px;
+}
+
+.image-loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #A62C2C;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.product-image-container-enhanced {
+  position: relative;
+  /* ...existing styles... */
 }
 </style>

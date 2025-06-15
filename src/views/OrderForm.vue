@@ -122,6 +122,53 @@
                       Adresa e dërgesës
                     </h4>
                     
+                    <!-- State and City Selection -->
+                    <div class="row">
+                      <div class="col-md-6 mb-4">
+                        <div class="floating-label-group">
+                          <select 
+                            class="floating-input"
+                            :class="{ 'has-value': orderDetails.shteti }"
+                            v-model="orderDetails.shteti"
+                            required
+                            id="shteti"
+                            @change="onStateChange"
+                          >
+                            <option value="" disabled>Zgjidhni shtetin</option>
+                            <option value="Kosova">Kosova</option>
+                            <option value="Shqipëria">Shqipëria</option>
+                            <option value="Maqedonia">Maqedonia</option>
+                          </select>
+                          <label for="shteti" class="floating-label">Shteti *</label>
+                          <div class="input-highlight"></div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-6 mb-4">
+                        <div class="floating-label-group">
+                          <select 
+                            class="floating-input"
+                            :class="{ 'has-value': orderDetails.qyteti }"
+                            v-model="orderDetails.qyteti"
+                            required
+                            id="qyteti"
+                            :disabled="!orderDetails.shteti"
+                          >
+                            <option value="" disabled>Zgjidhni qytetin</option>
+                            <option 
+                              v-for="city in availableCities" 
+                              :key="city" 
+                              :value="city"
+                            >
+                              {{ city }}
+                            </option>
+                          </select>
+                          <label for="qyteti" class="floating-label">Qyteti *</label>
+                          <div class="input-highlight"></div>
+                        </div>
+                      </div>
+                    </div>
+                    
                     <div class="mb-4">
                       <div class="floating-label-group">
                         <textarea 
@@ -134,7 +181,7 @@
                         ></textarea>
                         <label for="address" class="floating-label">Adresa e plotë *</label>
                         <div class="input-highlight"></div>
-                        <small class="form-text">Përfshini rrugën, numrin, qytetin dhe kodin postar</small>
+                        <small class="form-text">Përfshini rrugën, numrin dhe detaje të tjera</small>
                       </div>
                     </div>
                   </div>
@@ -240,47 +287,91 @@ export default {
         lastName: '',
         address: '',
         phone: '',
-        quantity: 1
+        quantity: 1,
+        shteti: '',
+        qyteti: ''
       },
       product: null,
-      isSubmitting: false
+      isSubmitting: false,
+      cities: {
+        'Kosova': [
+          'Prishtina', 'Prizren', 'Peja', 'Gjilani', 'Mitrovica', 'Ferizaj', 
+          'Gjakova', 'Suhareka', 'Istog', 'Klinë', 'Skënderaj', 'Viti', 
+          'Podujevë', 'Obiliq', 'Malishevë', 'Drenas', 'Kamenicë', 'Rahovec',
+          'Hani i Elezit', 'Mamushë', 'Junik', 'Deçan', 'Novo Brdo'
+        ],
+        'Shqipëria': [
+          'Tiranë', 'Durrës', 'Vlorë', 'Elbasan', 'Shkodër', 'Fier', 'Korçë',
+          'Berat', 'Lushnjë', 'Pogradec', 'Kavajë', 'Gjirokastër', 'Sarandë',
+          'Laç', 'Kukës', 'Lezhë', 'Pukë', 'Tropojë', 'Dibër', 'Bulqizë',
+          'Mirditë', 'Krujë', 'Mamurras', 'Patos', 'Roskovec', 'Ballsh',
+          'Mallakastër', 'Lushnjë', 'Divjakë', 'Rrogozhinë', 'Peqin', 'Librazhd',
+          'Gramsh', 'Cërrik', 'Belsh', 'Prrenjas', 'Pustec', 'Maliq', 'Devoll',
+          'Kolonjë', 'Përmet', 'Këlcyrë', 'Tepelenë', 'Memaliaj', 'Selenicë',
+          'Himarë', 'Delvinë', 'Finiq', 'Dropull', 'Konispol', 'Malësi e Madhe',
+          'Koplik', 'Bajram Curri', 'Has', 'Vau i Dejës'
+        ],
+        'Maqedonia': [
+          'Shkup', 'Kumanovë', 'Ohër', 'Tetovë', 'Gostivar', 'Strumicë', 'Manastir',
+          'Prilep', 'Veles', 'Kavadar', 'Dibër', 'Kërçovë', 'Kriva Pallankë',
+          'Radovish', 'Gevgjeli', 'Delçevë', 'Butel', 'Çair', 'Kisela Vodë',
+          'Saraj', 'Sopishte', 'Studeničan', 'Araçinovo', 'Ilinden', 'Petrovec',
+          'Zelenikovo', 'Plasnicë', 'Lipkovo', 'Rankovce', 'Kratovë', 'Kriva Pallankë',
+          'Probishtip', 'Sveti Nikole', 'Lozovo', 'Çashkë', 'Bogevgrad', 'Shtip',
+          'Vinicë', 'Zrnovci', 'Karbinci', 'Konche', 'Makedonska Kamenica',
+          'Pehçevo', 'Berovo', 'Vallandovë', 'Bogdanci', 'Dojran', 'Demir Kapijë',
+          'Negotino', 'Rosoman', 'Dolneni', 'Kavadarci', 'Çaška'
+        ]
+      }
     }
   },
-created() {
-  try {
-    // Use history.state instead of $route.query
-    const stateData = window.history.state && window.history.state.product;
-    if (stateData) {
-      this.product = stateData;
-      this.orderDetails.quantity = this.product.quantity || 1;
-      console.log('Received product data:', this.product);
-    } else {
-      console.error('No product data received');
+  computed: {
+    availableCities() {
+      return this.orderDetails.shteti ? this.cities[this.orderDetails.shteti] || [] : []
+    }
+  },
+  created() {
+    try {
+      // Use history.state instead of $route.query
+      const stateData = window.history.state && window.history.state.product;
+      if (stateData) {
+        this.product = stateData;
+        this.orderDetails.quantity = this.product.quantity || 1;
+        console.log('Received product data:', this.product);
+      } else {
+        console.error('No product data received');
+        this.$router.push('/');
+      }
+    } catch (error) {
+      console.error('Error parsing product data:', error);
       this.$router.push('/');
     }
-  } catch (error) {
-    console.error('Error parsing product data:', error);
-    this.$router.push('/');
-  }
-},
+  },
   methods: {
-    async submitOrder() {
-    this.isSubmitting = true;
+    onStateChange() {
+      // Reset city when state changes
+      this.orderDetails.qyteti = '';
+    },
     
-    try {
-      // Your bot token from @BotFather
-      const BOT_TOKEN = '7270860107:AAGerQQIYaX7I5A62uZXv2XTxh2lVYuY1KA';
-      // Your chat ID from @userinfobot
-      const CHAT_ID = '1674339130';
+    async submitOrder() {
+      this.isSubmitting = true;
       
-      // Format message for Telegram
-      const message = `
+      try {
+        // Your bot token from @BotFather
+        const BOT_TOKEN = '7710506046:AAF8LBVZHS4vxYxIzeaBPebRtxc_tgjh-6I';
+        // Your chat ID from @userinfobot
+        const CHAT_ID = '7687255327';
+        
+        // Format message for Telegram
+        const message = `
 🛍️ Porosi e Re e Marrë!
 
 👤 Detajet e Klientit:
 
 Emri: ${this.orderDetails.firstName} ${this.orderDetails.lastName}
 Nr. Telefonit: ${this.orderDetails.phone}
+Shteti: ${this.orderDetails.shteti}
+Qyteti: ${this.orderDetails.qyteti}
 Adresa: ${this.orderDetails.address}
 
 📦 Detajet e Produktit:
@@ -289,40 +380,40 @@ Produkti: ${this.product.title}
 Çmimi: ${this.product.price}€
 Sasia: ${this.orderDetails.quantity}
 Totali: ${this.calculateTotal()}€
-      `.trim();
+        `.trim();
 
-      // Send to Telegram
-      const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          chat_id: CHAT_ID,
-          text: message,
-          parse_mode: 'HTML'
-        })
-      });
+        // Send to Telegram
+        const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: message,
+            parse_mode: 'HTML'
+          })
+        });
 
-      if (!response.ok) {
-        throw new Error('Failed to send to Telegram');
+        if (!response.ok) {
+          throw new Error('Failed to send to Telegram');
+        }
+
+        // Show success message
+        this.showSuccessMessage();
+        
+        setTimeout(() => {
+          this.$router.push('/');
+        }, 2000);
+
+      } catch (error) {
+        console.error('Error submitting order:', error);
+        alert('There was an error submitting your order. Please try again.');
+      } finally {
+        this.isSubmitting = false;
       }
-
-      // Show success message
-      this.showSuccessMessage();
+    },
       
-      setTimeout(() => {
-        this.$router.push('/');
-      }, 2000);
-
-    } catch (error) {
-      console.error('Error submitting order:', error);
-      alert('There was an error submitting your order. Please try again.');
-    } finally {
-      this.isSubmitting = false;
-    }
-  },
-    
     showSuccessMessage() {
       // Create and show a success toast/modal
       const successElement = document.createElement('div')
@@ -596,7 +687,7 @@ Totali: ${this.calculateTotal()}€
 
 .floating-input {
   width: 100%;
-  padding: 1.3rem 1rem 0.75rem;
+  padding: 2rem 1rem 0.75rem;
   border: 2px solid #e5e7eb;
   border-radius: 16px;
   font-size: 1rem;

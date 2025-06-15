@@ -218,37 +218,45 @@
         </div>
 
         <!-- Products Grid -->
-        <div v-else class="products-grid">
-          <div 
-            v-for="(product, index) in products" 
-            :key="product.id" 
-            class="product-card"
-            :style="{ animationDelay: `${index * 0.1}s` }"
-          >
-            <div class="product-image-container">
-              <router-link :to="`/product/${product.id}`" class="product-link">
-                <img 
-                  :src="product.imageUrl" 
-                  :alt="product.title" 
-                  class="product-image"
-                  @error="handleImageError"
-                />
-                <div class="product-overlay">
-                  <span class="view-details">Shiko Detajet</span>
-                </div>
-              </router-link>
-              <div class="product-badge">{{ product.category }}</div>
-            </div>
-            
-            <div class="product-content">
-              <h3 class="product-title">{{ product.title }}</h3>
-              <div class="product-price">
-                <span class="price-amount">{{ product.price }}</span>
-                <span class="price-currency">€</span>
-              </div>
-            </div>
+       <div v-else class="products-grid">
+  <div 
+    v-for="(product, index) in products" 
+    :key="product.id" 
+    class="product-card"
+    :style="{ animationDelay: `${index * 0.1}s` }"
+  >
+    <div class="product-image-container">
+      <router-link :to="`/product/${product.id}`" class="product-link">
+        <!-- Loading spinner overlay -->
+        <div v-if="isImageLoading(product.id)" class="image-loading-overlay">
+          <div class="image-loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
           </div>
         </div>
+        <img 
+          :src="product.imageUrl" 
+          :alt="product.title" 
+          class="product-image"
+          @loadstart="handleImageLoadStart(product.id)"
+          @load="handleImageLoad(product.id)"
+          @error="handleImageError($event, product.id)"
+        />
+        <div class="product-overlay">
+          <span class="view-details">Shiko Detajet</span>
+        </div>
+      </router-link>
+      <div class="product-badge">{{ product.category }}</div>
+    </div>
+    
+    <div class="product-content">
+      <h3 class="product-title">{{ product.title }}</h3>
+      <div class="product-price">
+        <span class="price-amount">{{ product.price }}</span>
+        <span class="price-currency">€</span>
+      </div>
+    </div>
+  </div>
+</div>
       </div>
     </div>
   </div>
@@ -323,7 +331,8 @@ export default {
       
       // Add search functionality properties
       navSearchQuery: '', // For navbar search
-      navSearchFocused: false
+      navSearchFocused: false,
+         imageLoadingStates: {}
     }
   },
   
@@ -468,10 +477,24 @@ export default {
       const brand = this.brandCategories.find(b => b.name === this.selectedCategory)
       return brand ? brand.icon : 'fas fa-tag'
     },
+      handleImageLoadStart(productId) {
+      this.$set(this.imageLoadingStates, productId, true)
+    },
     
-    handleImageError(event) {
-      event.target.src = 'https://via.placeholder.com/300x300?text=No+Image'
-    }
+    handleImageLoad(productId) {
+      this.$set(this.imageLoadingStates, productId, false)
+    },
+    
+    isImageLoading(productId) {
+      return this.imageLoadingStates[productId] === true
+    },
+    
+    handleImageError(event, productId = null) {
+      event.target.src = 'https://media.istockphoto.com/id/1452662817/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=bGI_FngX0iexE3EBANPw9nbXkrJJA4-dcEJhCrP8qMw='
+      if (productId) {
+        this.$set(this.imageLoadingStates, productId, false)
+      }
+    },
   },
 }
 </script>
@@ -1467,5 +1490,40 @@ export default {
   text-align: center;
   padding: 12px 0;
 }
+
+/* Image Loading Overlay */
+.image-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(248, 249, 250, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  border-radius: 15px;
+}
+
+.image-loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #2c3e50;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+
 
 </style>
