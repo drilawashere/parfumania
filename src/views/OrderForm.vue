@@ -139,7 +139,6 @@
                             <option value="Shqipëria">Shqipëria</option>
                             <option value="Maqedonia">Maqedonia</option>
                           </select>
-                          <label for="shteti" class="floating-label">Shteti *</label>
                           <div class="input-highlight"></div>
                         </div>
                       </div>
@@ -163,7 +162,6 @@
                               {{ city }}
                             </option>
                           </select>
-                          <label for="qyteti" class="floating-label">Qyteti *</label>
                           <div class="input-highlight"></div>
                         </div>
                       </div>
