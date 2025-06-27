@@ -258,11 +258,9 @@
           <div class="trust-badges mt-4">
             <div class="d-flex flex-wrap gap-3">
               <div class="trust-badge">
-                <i class="fas fa-truck text-success"></i>
-                <span class="small">Free Shipping</span>
+              <i class="fas fa-truck text-success"></i>
+              <span class="small">Shipping: <strong>2€</strong> KS<br><strong>5€ </strong>AL/MK</span>
               </div>
-           
-            
             </div>
           </div>
         </div>
