@@ -344,7 +344,6 @@ export default {
       if (stateData) {
         this.product = stateData;
         this.orderDetails.quantity = this.product.quantity || 1;
-        console.log('Received product data:', this.product);
       } else {
         console.error('No product data received');
         this.$router.push('/');

@@ -43,7 +43,7 @@
         <input
           type="text"
           class="form-control"
-          placeholder="Search fragrances..."
+          placeholder="Kërkoni një produkt..."
           v-model="navSearchQuery"
           @keyup.enter="handleNavSearch"
           @focus="navSearchFocused = true"
@@ -68,7 +68,7 @@
         <input
           type="text"
           class="form-control"
-          placeholder="Search fragrances..."
+          placeholder="Kërkoni një produkt..."
           v-model="navSearchQuery"
           @keyup.enter="handleNavSearch"
           @focus="navSearchFocused = true"

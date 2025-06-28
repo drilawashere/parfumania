@@ -15,7 +15,6 @@ async function deleteAllProducts() {
   });
 
   await batch.commit();
-  console.log(`Deleted ${snapshot.size} products.`);
   process.exit(0);
 }
 

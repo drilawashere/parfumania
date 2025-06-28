@@ -92,7 +92,6 @@ fs.createReadStream('parfumes.csv')
     });
   })
   .on('end', async () => {
-    console.log(`Parsed ${products.length} products. Importing...`);
     for (const product of products) {
       let imageUrl = null;
       if (product.imageFile) {
@@ -103,6 +102,5 @@ fs.createReadStream('parfumes.csv')
       product.imageUrl = imageUrl;
       await db.collection('products').add(product);
     }
-    console.log('Import complete!');
     process.exit(0);
   });

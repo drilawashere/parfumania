@@ -768,7 +768,6 @@ export default {
         this.loggedIn = true;
         this.error = false;
         this.fetchProducts(); // Fetch products after login
-        console.log('Logged in as:', userCredential.user.email);
       } catch (err) {
         console.error('Login error:', err.message);
         this.error = true;
@@ -781,7 +780,6 @@ export default {
         this.username = '';
         this.password = '';
         this.resetForm();
-        console.log('Logged out successfully');
       } catch (err) {
         console.error('Logout error:', err.message);
       }
@@ -865,10 +863,8 @@ export default {
       createdAt: Timestamp.now(),
     }
 
-    console.log('Adding product:', productData)
 
     const docRef = await addDoc(collection(db, 'products'), productData)
-    console.log('Product added with ID:', docRef.id)
 
     alert('Product added successfully!')
 
