@@ -427,13 +427,9 @@ export default {
       return specs
     },
     stockStatusClass() {
-      if (!this.product.stock || this.product.stock < 1) return 'bg-danger'
-      if (this.product.stock < 10) return 'bg-warning text-dark'
       return 'bg-success'
     },
     stockStatusText() {
-      if (!this.product.stock || this.product.stock < 1) return 'Out of Stock'
-      if (this.product.stock < 10) return 'Low Stock'
       return 'In Stock'
     },
    canAddToCart() {
