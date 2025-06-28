@@ -26,17 +26,17 @@
                 <h2 class="form-title">Detajet e Porosisë</h2>
                 <p class="form-subtitle">Plotësoni të dhënat tuaja për të përfunduar porosinë</p>
               </div>
-              
+
               <div v-if="product" class="fade-in">
                 <!-- Product Summary Card -->
                 <div class="product-summary-card mb-5">
                   <div class="row align-items-center">
                     <div class="col-md-3">
                       <div class="product-image-wrapper">
-                        <img 
-                          v-if="product.imageUrl" 
-                          :src="product.imageUrl" 
-                          alt="Product" 
+                        <img
+                          v-if="product.imageUrl"
+                          :src="product.imageUrl"
+                          alt="Product"
                           class="product-image"
                         >
                         <div v-else class="product-placeholder">
@@ -64,12 +64,12 @@
                       <i class="fas fa-user me-2"></i>
                       Të dhënat personale
                     </h4>
-                    
+
                     <div class="row">
                       <div class="col-md-6 mb-4">
                         <div class="floating-label-group">
-                          <input 
-                            type="text" 
+                          <input
+                            type="text"
                             class="floating-input"
                             :class="{ 'has-value': orderDetails.firstName }"
                             v-model="orderDetails.firstName"
@@ -83,8 +83,8 @@
 
                       <div class="col-md-6 mb-4">
                         <div class="floating-label-group">
-                          <input 
-                            type="text" 
+                          <input
+                            type="text"
                             class="floating-input"
                             :class="{ 'has-value': orderDetails.lastName }"
                             v-model="orderDetails.lastName"
@@ -99,8 +99,8 @@
 
                     <div class="mb-4">
                       <div class="floating-label-group">
-                        <input 
-                          type="tel" 
+                        <input
+                          type="tel"
                           class="floating-input"
                           :class="{ 'has-value': orderDetails.phone }"
                           v-model="orderDetails.phone"
@@ -120,12 +120,12 @@
                       <i class="fas fa-map-marker-alt me-2"></i>
                       Adresa e dërgesës
                     </h4>
-                    
+
                     <!-- State and City Selection -->
                     <div class="row">
                       <div class="col-md-6 mb-4">
                         <div class="floating-label-group">
-                          <select 
+                          <select
                             class="floating-input"
                             :class="{ 'has-value': orderDetails.shteti }"
                             v-model="orderDetails.shteti"
@@ -144,7 +144,7 @@
 
                       <div class="col-md-6 mb-4">
                         <div class="floating-label-group">
-                          <select 
+                          <select
                             class="floating-input"
                             :class="{ 'has-value': orderDetails.qyteti }"
                             v-model="orderDetails.qyteti"
@@ -153,9 +153,9 @@
                             :disabled="!orderDetails.shteti"
                           >
                             <option value="" disabled>Zgjidhni qytetin</option>
-                            <option 
-                              v-for="city in availableCities" 
-                              :key="city" 
+                            <option
+                              v-for="city in availableCities"
+                              :key="city"
                               :value="city"
                             >
                               {{ city }}
@@ -165,10 +165,10 @@
                         </div>
                       </div>
                     </div>
-                    
+
                     <div class="mb-4">
                       <div class="floating-label-group">
-                        <textarea 
+                        <textarea
                           class="floating-input textarea"
                           :class="{ 'has-value': orderDetails.address }"
                           v-model="orderDetails.address"
@@ -189,30 +189,30 @@
                       <i class="fas fa-shopping-cart me-2"></i>
                       Detajet e porosisë
                     </h4>
-                    
+
                     <div class="row align-items-center">
                       <div class="col-md-6 mb-4">
                         <div class="quantity-selector">
                           <label class="quantity-label">Sasia</label>
                           <div class="quantity-controls">
-                            <button 
-                              type="button" 
+                            <button
+                              type="button"
                               class="qty-btn minus"
                               @click="decreaseQuantity"
                               :disabled="orderDetails.quantity <= 1"
                             >
                               <i class="fas fa-minus"></i>
                             </button>
-                            <input 
-                              type="number" 
+                            <input
+                              type="number"
                               class="qty-input"
                               v-model="orderDetails.quantity"
                               min="1"
                               max="99"
                               required
                             >
-                            <button 
-                              type="button" 
+                            <button
+                              type="button"
                               class="qty-btn plus"
                               @click="increaseQuantity"
                               :disabled="orderDetails.quantity >= 99"
@@ -222,11 +222,16 @@
                           </div>
                         </div>
                       </div>
-                      
+
                       <div class="col-md-6 mb-4">
                         <div class="total-price-card">
                           <div class="total-label">Totali</div>
                           <div class="total-amount">{{ calculateTotal() }}€</div>
+                           <div v-if="orderDetails.shteti" class="shipping-info">
+    <small>
+      Përfshin dërgesën: {{ shippingPrices[orderDetails.shteti] || 0 }}€
+    </small>
+  </div>
                         </div>
                       </div>
                     </div>
@@ -234,8 +239,8 @@
 
                   <!-- Submit Section -->
                   <div class="submit-section text-center">
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       class="btn-submit"
                       :disabled="isSubmitting"
                       :class="{ 'submitting': isSubmitting }"
@@ -249,7 +254,7 @@
                         Duke procesuar...
                       </span>
                     </button>
-                    
+
                     <div class="security-badge mt-3">
                       <i class="fas fa-shield-alt me-2"></i>
                       <small>Transaksioni është i sigurt dhe i mbrojtur</small>
@@ -257,7 +262,7 @@
                   </div>
                 </form>
               </div>
-              
+
               <div v-else class="loading-state">
                 <div class="loading-animation">
                   <div class="loading-circle"></div>
@@ -288,12 +293,17 @@ export default {
         shteti: '',
         qyteti: ''
       },
+          shippingPrices: {
+      'Kosova': 2,
+      'Shqipëria': 4,
+      'Maqedonia': 5
+    },
       product: null,
       isSubmitting: false,
       cities: {
         'Kosova': [
-          'Prishtina', 'Prizren', 'Peja', 'Gjilani', 'Mitrovica', 'Ferizaj', 
-          'Gjakova', 'Suhareka', 'Istog', 'Klinë', 'Skënderaj', 'Viti', 
+          'Prishtina', 'Prizren', 'Peja', 'Gjilani', 'Mitrovica', 'Ferizaj',
+          'Gjakova', 'Suhareka', 'Istog', 'Klinë', 'Skënderaj', 'Viti',
           'Podujevë', 'Obiliq', 'Malishevë', 'Drenas', 'Kamenicë', 'Rahovec',
           'Hani i Elezit', 'Mamushë', 'Junik', 'Deçan', 'Novo Brdo'
         ],
@@ -349,16 +359,16 @@ export default {
       // Reset city when state changes
       this.orderDetails.qyteti = '';
     },
-    
+
     async submitOrder() {
       this.isSubmitting = true;
-      
+
       try {
         // Your bot token from @BotFather
         const BOT_TOKEN = '7710506046:AAF8LBVZHS4vxYxIzeaBPebRtxc_tgjh-6I';
         // Your chat ID from @userinfobot
         const CHAT_ID = '7687255327';
-        
+
         // Format message for Telegram
         const message = `
 🛍️ Porosi e Re e Marrë!
@@ -398,7 +408,7 @@ Totali: ${this.calculateTotal()}€
 
         // Show success message
         this.showSuccessMessage();
-        
+
         setTimeout(() => {
           this.$router.push('/');
         }, 2000);
@@ -410,7 +420,7 @@ Totali: ${this.calculateTotal()}€
         this.isSubmitting = false;
       }
     },
-      
+
     showSuccessMessage() {
       // Create and show a success toast/modal
       const successElement = document.createElement('div')
@@ -423,27 +433,28 @@ Totali: ${this.calculateTotal()}€
         </div>
       `
       document.body.appendChild(successElement)
-      
+
       setTimeout(() => {
         successElement.classList.add('show')
       }, 100)
-      
+
       setTimeout(() => {
         successElement.remove()
       }, 3000)
     },
-    
-    calculateTotal() {
-      if (!this.product || !this.product.price) return 0
-      return (parseFloat(this.product.price) * this.orderDetails.quantity).toFixed(2)
-    },
-    
+calculateTotal() {
+  if (!this.product || !this.product.price) return 0
+  const baseTotal = parseFloat(this.product.price) * this.orderDetails.quantity
+  const shipping = this.shippingPrices[this.orderDetails.shteti] || 0
+  return (baseTotal + shipping).toFixed(2)
+},
+
     increaseQuantity() {
       if (this.orderDetails.quantity < 99) {
         this.orderDetails.quantity++
       }
     },
-    
+
     decreaseQuantity() {
       if (this.orderDetails.quantity > 1) {
         this.orderDetails.quantity--
@@ -474,7 +485,7 @@ Totali: ${this.calculateTotal()}€
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: 
+  background-image:
     radial-gradient(circle at 20% 80%, rgba(220, 38, 38, 0.03) 0%, transparent 50%),
     radial-gradient(circle at 80% 20%, rgba(220, 38, 38, 0.03) 0%, transparent 50%);
   pointer-events: none;
@@ -951,9 +962,9 @@ Totali: ${this.calculateTotal()}€
 .loading-circle:nth-child(2) { animation-delay: -0.16s; }
 
 @keyframes bounce {
-  0%, 80%, 100% { 
+  0%, 80%, 100% {
     transform: scale(0);
-  } 40% { 
+  } 40% {
     transform: scale(1.0);
   }
 }
@@ -1017,33 +1028,33 @@ Totali: ${this.calculateTotal()}€
   .form-title {
     font-size: 1.875rem;
   }
-  
+
   .product-summary-card {
     padding: 1.5rem;
   }
-  
+
   .product-summary-card .row {
     text-align: center;
   }
-  
+
   .product-summary-card .col-md-3,
   .product-summary-card .col-md-6,
   .product-summary-card .col-md-3 {
     margin-bottom: 1rem;
   }
-  
+
   .progress-indicator {
     margin-bottom: 1.5rem;
   }
-  
+
   .step-line {
     width: 60px;
   }
-  
+
   .quantity-controls {
     justify-content: space-between;
   }
-  
+
   .btn-submit {
     width: 100%;
     max-width: 300px;
@@ -1054,11 +1065,11 @@ Totali: ${this.calculateTotal()}€
   .card-body {
     padding: 2rem !important;
   }
-  
+
   .form-title {
     font-size: 1.5rem;
   }
-  
+
   .form-subtitle {
     font-size: 0.875rem;
   }
