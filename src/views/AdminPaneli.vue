@@ -16,10 +16,10 @@
               <div class="input-group-prepend">
                 <span class="input-group-text"><i class="fas fa-user"></i></span>
               </div>
-              <input 
-                v-model="username" 
-                type="text" 
-                class="form-control" 
+              <input
+                v-model="username"
+                type="text"
+                class="form-control"
                 placeholder="Username"
                 :class="{ 'is-invalid': error }"
               />
@@ -30,10 +30,10 @@
               <div class="input-group-prepend">
                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
               </div>
-              <input 
-                v-model="password" 
-                type="password" 
-                class="form-control" 
+              <input
+                v-model="password"
+                type="password"
+                class="form-control"
                 placeholder="Password"
                 :class="{ 'is-invalid': error }"
               />
@@ -60,9 +60,9 @@
       <img src="@/assets/logopp.svg" alt="Parfumania Logo" style="height: 45px;" />
     </a>
           </div>
-          
+
           <!-- Mobile Menu Toggle -->
-        
+
 
           <!-- Navigation Links -->
           <div class="nav-links">
@@ -70,9 +70,9 @@
               <i class="fas fa-tachometer-alt"></i>
               <span>Dashboard</span>
             </a>
-          
-          
-           
+
+
+
           </div>
 
           <!-- User Actions -->
@@ -121,10 +121,10 @@
               <div class="stat-content">
                 <div class="stat-number">{{ products.length }}</div>
                 <div class="stat-label">Total Products</div>
-               
+
               </div>
             </div>
-            
+
             <div class="stat-card success">
               <div class="stat-icon">
                 <i class="fas fa-star"></i>
@@ -132,7 +132,7 @@
               <div class="stat-content">
                 <div class="stat-number">{{ newProductsCount }}</div>
                 <div class="stat-label">New Products</div>
-               
+
               </div>
             </div>
 
@@ -143,11 +143,11 @@
               <div class="stat-content">
                 <div class="stat-number">{{ bestSellingCount }}</div>
                 <div class="stat-label">Best Selling</div>
-               
+
               </div>
             </div>
 
-          
+
           </div>
 
           <!-- Quick Actions -->
@@ -160,7 +160,7 @@
                 <i class="fas fa-plus"></i>
                 <span>Add Product</span>
               </button>
-            
+
             </div>
           </div>
 
@@ -182,18 +182,18 @@
                     <h4 class="section-header">
                       <i class="fas fa-info-circle"></i>Basic Information
                     </h4>
-                    
+
                     <div class="form-group enhanced">
                       <label for="title" class="form-label">
                         <i class="fas fa-tag"></i>Product Title *
                       </label>
-                      <input 
-                        v-model="product.title" 
+                      <input
+                        v-model="product.title"
                         id="title"
                         type="text"
-                        class="form-control enhanced" 
+                        class="form-control enhanced"
                         placeholder="Enter a descriptive product title"
-                        required 
+                        required
                       />
                       <div class="form-help">Choose a clear, descriptive name for your product</div>
                     </div>
@@ -202,10 +202,10 @@
                       <label for="description" class="form-label">
                         <i class="fas fa-align-left"></i>Description *
                       </label>
-                      <textarea 
-                        v-model="product.description" 
+                      <textarea
+                        v-model="product.description"
                         id="description"
-                        class="form-control enhanced" 
+                        class="form-control enhanced"
                         rows="4"
                         placeholder="Describe the product features, scent notes, and benefits"
                       ></textarea>
@@ -219,14 +219,14 @@
                         </label>
                         <div class="input-with-icon">
                           <span class="input-icon">€</span>
-                          <input 
-                            v-model.number="product.price" 
+                          <input
+                            v-model.number="product.price"
                             id="price"
-                            type="number" 
+                            type="number"
                             step="0.01"
-                            class="form-control enhanced with-icon" 
+                            class="form-control enhanced with-icon"
                             placeholder="0.00"
-                            required 
+                            required
                           />
                         </div>
                       </div>
@@ -236,11 +236,11 @@
                         </label>
                         <div class="input-with-icon">
                           <span class="input-icon">%</span>
-                          <input 
-                            v-model.number="product.discount" 
+                          <input
+                            v-model.number="product.discount"
                             id="discount"
-                            type="number" 
-                            class="form-control enhanced with-icon" 
+                            type="number"
+                            class="form-control enhanced with-icon"
                             placeholder="0"
                             min="0"
                             max="100"
@@ -253,10 +253,10 @@
                       <label for="category" class="form-label">
                         <i class="fas fa-list"></i>Category *
                       </label>
-                      <select 
-                        v-model="product.category" 
+                      <select
+                        v-model="product.category"
                         id="category"
-                        class="form-control enhanced" 
+                        class="form-control enhanced"
                         required
                       >
                         <option disabled value="">Select Category</option>
@@ -318,18 +318,18 @@
                     <h4 class="section-header">
                       <i class="fas fa-image"></i>Media & Settings
                     </h4>
-                    
+
                     <div class="form-group enhanced">
                       <label for="imageUpload" class="form-label">
                         <i class="fas fa-camera"></i>Product Image *
                       </label>
                       <div class="image-upload-area">
-                        <input 
-                          type="file" 
-                          id="imageUpload" 
-                          @change="handleImageUpload" 
-                          class="file-input" 
-                          accept="image/*" 
+                        <input
+                          type="file"
+                          id="imageUpload"
+                          @change="handleImageUpload"
+                          class="file-input"
+                          accept="image/*"
                           :required="!editingProduct"
                         />
                         <label for="imageUpload" class="file-label">
@@ -344,8 +344,8 @@
                       <label class="form-label">Upload Progress</label>
                       <div class="progress-container">
                         <div class="progress-bar">
-                          <div 
-                            class="progress-fill" 
+                          <div
+                            class="progress-fill"
                             :style="{width: uploadProgress + '%'}"
                           ></div>
                         </div>
@@ -367,10 +367,10 @@
                       <label class="form-label">Product Tags</label>
                       <div class="checkbox-grid">
                         <div class="checkbox-item">
-                          <input 
-                            v-model="product.new" 
-                            type="checkbox" 
-                            class="custom-checkbox" 
+                          <input
+                            v-model="product.new"
+                            type="checkbox"
+                            class="custom-checkbox"
                             id="newProduct"
                           />
                           <label for="newProduct" class="checkbox-label">
@@ -382,10 +382,10 @@
                         </div>
 
                         <div class="checkbox-item">
-                          <input 
-                            v-model="product.bestSelling" 
-                            type="checkbox" 
-                            class="custom-checkbox" 
+                          <input
+                            v-model="product.bestSelling"
+                            type="checkbox"
+                            class="custom-checkbox"
                             id="bestSelling"
                           />
                           <label for="bestSelling" class="checkbox-label">
@@ -399,8 +399,8 @@
                     </div>
 
                     <div class="form-actions">
-                      <button 
-                        type="submit" 
+                      <button
+                        type="submit"
                         class="btn btn-primary enhanced"
                         :disabled="uploading"
                         :class="{ 'loading': uploading }"
@@ -418,11 +418,11 @@
                           <span>Add Product</span>
                         </span>
                       </button>
-                      
-                      <button 
+
+                      <button
                         v-if="editingProduct"
                         @click="cancelEdit"
-                        type="button" 
+                        type="button"
                         class="btn btn-secondary enhanced"
                       >
                         <i class="fas fa-times"></i>
@@ -451,10 +451,10 @@
       <div class="search-filter-group">
         <div class="search-box">
           <i class="fas fa-search search-icon"></i>
-          <input 
+          <input
             v-model="searchQuery"
-            type="text" 
-            class="search-input" 
+            type="text"
+            class="search-input"
             placeholder="Search products..."
           />
         </div>
@@ -517,7 +517,7 @@
       </div>
     </div>
   </div>
-  
+
  <div class="card-body">
   <!-- Loading State -->
   <div v-if="loading" class="loading-state">
@@ -535,9 +535,9 @@
       <div v-for="(product, index) in filteredProducts" :key="product.id || index" class="product-card-mobile">
         <div class="product-card-header">
           <div class="product-image-mobile">
-            <img 
-              :src="product.imageUrl" 
-              alt="Product" 
+            <img
+              :src="product.imageUrl"
+              alt="Product"
               @error="handleImageError"
             />
           </div>
@@ -551,7 +551,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="product-card-body">
           <div class="product-details-row">
             <div class="detail-item">
@@ -567,17 +567,17 @@
             </div>
           </div>
         </div>
-        
+
         <div class="product-card-actions">
-          <button 
-            @click="editProduct(product)" 
+          <button
+            @click="editProduct(product)"
             class="action-btn-mobile edit"
           >
             <i class="fas fa-edit"></i>
             <span>Edit</span>
           </button>
-          <button 
-            @click="deleteProduct(product.id)" 
+          <button
+            @click="deleteProduct(product.id)"
             class="action-btn-mobile delete"
           >
             <i class="fas fa-trash"></i>
@@ -607,9 +607,9 @@
               <td class="product-cell">
                 <div class="product-info">
                   <div class="product-image">
-                    <img 
-                      :src="product.imageUrl" 
-                      alt="Product" 
+                    <img
+                      :src="product.imageUrl"
+                      alt="Product"
                       @error="handleImageError"
                     />
                   </div>
@@ -637,15 +637,15 @@
               </td>
               <td class="actions-cell">
                 <div class="action-buttons">
-                  <button 
-                    @click="editProduct(product)" 
+                  <button
+                    @click="editProduct(product)"
                     class="action-btn edit"
                     title="Edit Product"
                   >
                     <i class="fas fa-edit"></i>
                   </button>
-                  <button 
-                    @click="deleteProduct(product.id)" 
+                  <button
+                    @click="deleteProduct(product.id)"
                     class="action-btn delete"
                     title="Delete Product"
                   >
@@ -692,8 +692,6 @@
 </template>
 
 <script>
-import { db, storage, auth } from '@/firebase'
-import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore'
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import productService from '@/services/productService'
@@ -725,9 +723,16 @@ export default {
       uploadProgress: 0,
       products: [],
       editingProduct: null,
+        allProducts: [],
+      currentPage: 1,
+      pageSize: 10,
     }
   },
   computed: {
+     paginatedProducts() {
+      const start = (this.currentPage - 1) * this.pageSize
+      return this.allProducts.slice(start, start + this.pageSize)
+    },
     newProductsCount() {
       return this.products.filter(p => p.new).length
     },
@@ -739,7 +744,7 @@ export default {
 
       if (this.searchQuery) {
         const query = this.searchQuery.toLowerCase()
-        filtered = filtered.filter(product => 
+        filtered = filtered.filter(product =>
           (product.title || '').toLowerCase().includes(query) ||
           (product.description || '').toLowerCase().includes(query) ||
           (product.category || '').toLowerCase().includes(query)
@@ -752,6 +757,9 @@ export default {
 
       return filtered
     }
+  },
+    async created() {
+    this.allProducts = await productService.getProducts()
   },
   methods: {
      async login() {
@@ -781,7 +789,7 @@ export default {
 
     handleImageUpload(event) {
       this.imageFile = event.target.files[0]
-      
+
       if (this.imageFile) {
         this.imagePreviewUrl = URL.createObjectURL(this.imageFile)
       }
@@ -791,14 +799,14 @@ export default {
     },
     async uploadImage() {
       if (!this.imageFile) return null
-      
+
       this.uploading = true
       this.uploadProgress = 0
-      
+
       try {
         const storageRef = ref(storage, `products/${Date.now()}_${this.imageFile.name}`)
         const uploadTask = uploadBytesResumable(storageRef, this.imageFile)
-        
+
         return new Promise((resolve, reject) => {
           uploadTask.on('state_changed',
             (snapshot) => {
@@ -836,15 +844,15 @@ export default {
       await this.updateProduct()
       return
     }
-    
+
     const downloadURL = await this.uploadImage()
     if (!downloadURL) {
       alert('Error uploading image!')
       return
     }
-    
+
     this.product.imageUrl = downloadURL
-    
+
     const productData = {
       title: this.product.title,
       description: this.product.description,
@@ -858,15 +866,15 @@ export default {
     }
 
     console.log('Adding product:', productData)
-    
+
     const docRef = await addDoc(collection(db, 'products'), productData)
     console.log('Product added with ID:', docRef.id)
-    
+
     alert('Product added successfully!')
-    
+
     // Clear cache after adding product
     productService.clearCache()
-    
+
     this.resetForm()
     await this.fetchProducts()
   } catch (err) {
@@ -889,7 +897,7 @@ export default {
     },
     editProduct(product) {
       console.log('Editing product:', product)
-      this.product = { 
+      this.product = {
         title: product.title || '',
         description: product.description || '',
         price: product.price || null,
@@ -901,7 +909,7 @@ export default {
       }
       this.editingProduct = product.id
       this.imagePreviewUrl = product.imageUrl
-      
+
       // Scroll to form
         document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' })
 
@@ -931,10 +939,10 @@ async updateProduct() {
     console.log('Updating product:', updateData)
     await updateDoc(productRef, updateData)
     alert('Product updated successfully!')
-    
+
     // Clear cache after updating
     productService.clearCache()
-    
+
     this.cancelEdit()
     await this.fetchProducts()
   } catch (err) {
@@ -950,10 +958,10 @@ async updateProduct() {
     const productRef = doc(db, 'products', productId)
     await deleteDoc(productRef)
     alert('Product deleted successfully!')
-    
+
     // Clear cache after deleting
     productService.clearCache()
-    
+
     await this.fetchProducts()
   } catch (err) {
     console.error('Error deleting product:', err)
@@ -2221,7 +2229,7 @@ async updateProduct() {
   .content-wrapper {
     padding: 30px 20px;
   }
-  
+
   .stats-grid {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
@@ -2231,7 +2239,7 @@ async updateProduct() {
   .mobile-menu-toggle {
     display: block;
   }
-  
+
   .nav-links {
     position: absolute;
     top: 100%;
@@ -2248,27 +2256,27 @@ async updateProduct() {
     transition: all 0.3s ease;
     z-index: 999;
   }
-  
+
   .nav-links.show {
     transform: translateY(0);
     opacity: 1;
     visibility: visible;
   }
-  
+
   .nav-link {
     width: 100%;
     justify-content: flex-start;
   }
-  
+
   .product-form .form-row {
     grid-template-columns: 1fr;
     gap: 30px;
   }
-  
+
   .quick-actions-grid {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   }
-  
+
   .form-row-split {
     grid-template-columns: 1fr;
   }
@@ -2278,74 +2286,74 @@ async updateProduct() {
   .nav-container {
     padding: 0 15px;
   }
-  
+
   .nav-brand {
     font-size: 1.3rem;
   }
-  
+
   .nav-brand span {
     display: none;
   }
-  
+
   .nav-actions {
     gap: 10px;
   }
-  
+
   .time-display {
     display: none;
   }
-  
+
   .user-details {
     display: none;
   }
-  
+
   .logout-btn span {
     display: none;
   }
-  
+
   .page-title {
     font-size: 2rem;
   }
-  
+
   .content-wrapper {
     padding: 20px 15px;
   }
-  
+
   .card-header {
     padding: 20px;
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .card-body {
     padding: 20px;
   }
-  
+
   .form-section {
     padding: 20px;
   }
-  
+
   .search-filter-group {
     flex-direction: column;
     width: 100%;
   }
-  
+
   .search-box {
     min-width: 100%;
   }
-  
+
   .filter-select {
     min-width: 100%;
   }
-  
+
   .form-actions {
     flex-direction: column;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .quick-actions-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -2356,39 +2364,39 @@ async updateProduct() {
     padding: 30px;
     margin: 15px;
   }
-  
+
   .page-title {
     font-size: 1.5rem;
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
   }
-  
+
   .quick-actions-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .products-table th,
   .products-table td {
     padding: 15px 8px;
   }
-  
+
   .product-info {
     flex-direction: column;
     gap: 10px;
     text-align: center;
     min-width: 200px;
   }
-  
+
   .action-buttons {
     justify-content: center;
   }
-  
+
   .stat-card {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .btn.enhanced {
     min-width: 100%;
   }
@@ -2446,12 +2454,12 @@ async updateProduct() {
   .action-buttons {
     display: none !important;
   }
-  
+
   .table-card {
     box-shadow: none !important;
     border: 1px solid #000 !important;
   }
-  
+
   .page-header {
     border-bottom: 2px solid #000 !important;
   }
@@ -2694,20 +2702,20 @@ async updateProduct() {
     padding: 15px 10px;
     font-size: 0.9rem;
   }
-  
+
   .product-info {
     gap: 10px;
   }
-  
+
   .product-image {
     width: 50px;
     height: 50px;
   }
-  
+
   .product-title {
     font-size: 0.95rem;
   }
-  
+
   .product-description {
     font-size: 0.8rem;
   }
@@ -2717,28 +2725,28 @@ async updateProduct() {
   .desktop-table {
     display: none;
   }
-  
+
   .mobile-products-view {
     display: block;
   }
-  
+
   .search-filter-group {
     flex-direction: column;
     width: 100%;
     gap: 10px;
   }
-  
+
   .search-box,
   .filter-select {
     min-width: 100%;
   }
-  
+
   .card-header {
     flex-direction: column;
     align-items: stretch;
     gap: 15px;
   }
-  
+
   .header-stats {
     justify-content: flex-start;
   }
@@ -2750,27 +2758,27 @@ async updateProduct() {
     text-align: center;
     gap: 12px;
   }
-  
+
   .product-image-mobile {
     width: 100px;
     height: 100px;
     margin: 0 auto;
   }
-  
+
   .product-details-row {
     grid-template-columns: 1fr;
     gap: 15px;
   }
-  
+
   .action-btn-mobile {
     padding: 10px 15px;
     font-size: 0.85rem;
   }
-  
+
   .product-badges-mobile {
     justify-content: center;
   }
-  
+
   .search-filter-group {
     gap: 15px;
   }
@@ -2780,17 +2788,17 @@ async updateProduct() {
   .product-card-mobile {
     margin-bottom: 15px;
   }
-  
+
   .product-card-header,
   .product-card-body,
   .product-card-actions {
     padding: 15px;
   }
-  
+
   .product-card-actions {
     flex-direction: column;
   }
-  
+
   .action-btn-mobile {
     justify-content: center;
   }

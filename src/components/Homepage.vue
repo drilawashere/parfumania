@@ -62,13 +62,13 @@
         <div class="product-card">
           <!-- Product Image -->
           <div class="product-image">
-            <img 
-              src="https://baliperfumes.com/pub/media/catalog/product/cache/c70ae39189325524823e3a7bddbfebee/i/m/img_6269572d549b2_1651070765.png" 
-              alt="Perfume" 
+            <img
+              src="https://baliperfumes.com/pub/media/catalog/product/cache/c70ae39189325524823e3a7bddbfebee/i/m/img_6269572d549b2_1651070765.png"
+              alt="Perfume"
               class="img-fluid rounded"
             >
           </div>
-          
+
           <!-- Product Info -->
           <div class="product-info mt-2">
             <h6 class="product-title mb-0 text-secondary">
@@ -223,8 +223,7 @@
 </template>
 
 <script>
-import { db } from '@/firebase'
-import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore'
+import productService from '@/services/productService'
 
 export default {
   name: 'ParfumUmana',
@@ -236,15 +235,9 @@ export default {
   },
   async created() {
     try {
-      // Merr 6 produktet e fundit të shtuara
-      const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(6))
-      const querySnapshot = await getDocs(q)
-      this.bestSellingProducts = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }))
+      this.bestSellingProducts = await productService.getBestSellingProducts()
     } catch (err) {
-      console.error('Gabim gjatë marrjes së produkteve:', err)
+      console.error('Error fetching products:', err)
     } finally {
       this.loading = false
     }
@@ -435,15 +428,15 @@ export default {
     padding-left: 8px;
     padding-right: 8px;
   }
-  
+
   .product-card {
     height: 200px;
   }
-  
+
   .product-image-container {
     height: 160px;
   }
-  
+
   .product-image {
     max-height: 140px;
   }

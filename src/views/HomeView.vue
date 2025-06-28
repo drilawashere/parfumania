@@ -10,15 +10,15 @@
      <a class="navbar-brand brand-logo" href="/">
       <img src="@/assets/logopp.svg" alt="Parfumania Logo" style="height: 45px;" />
     </a>
-    
+
     <!-- Mobile toggle button -->
-    <button 
-      class="navbar-toggler mobile-toggle" 
-      type="button" 
-      data-bs-toggle="collapse" 
+    <button
+      class="navbar-toggler mobile-toggle"
+      type="button"
+      data-bs-toggle="collapse"
       data-bs-target="#navbarNav"
-      aria-controls="navbarNav" 
-      aria-expanded="false" 
+      aria-controls="navbarNav"
+      aria-expanded="false"
       aria-label="Toggle navigation"
     >
       <span class="mobile-toggle-icon">
@@ -27,7 +27,7 @@
         <span></span>
       </span>
     </button>
-    
+
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mx-auto mobile-nav-menu">
       <li class="nav-item active">
@@ -40,7 +40,7 @@
   <a class="nav-link nav-link-enhanced" href="/" @click="closeMobileMenu">SHOP</a>
 </li> -->
       </ul>
-      
+
       <!-- Mobile search (will be hidden on desktop, shown in mobile menu) -->
       <div class="search-box-enhanced mobile-search">
   <input
@@ -122,29 +122,32 @@
         </div>
         <div class="row g-4">
           <div class="col-md-3 col-sm-6 mb-4" v-for="(cat, i) in 4" :key="i">
-            <div class="category-card-enhanced">
-              <div class="category-image-wrapper">
-              <img :src="categoryImages[i]" alt="Perfume Category" class="category-image" />
-                
-              </div>
-              <div class="category-info">
-                <h6 class="category-title">
-                  <span v-if="i === 0">Parfume për meshkuj</span>
-                  <span v-else-if="i === 1">Parfume për femra</span>
-                  <span v-else-if="i === 2">Parfuma Arab</span>
-                  <span v-else>Sol De Janeiro</span>
-                </h6>
-                <p class="category-price">
-                  Starting from 
-                  <span class="price-highlight">
-                    <span v-if="i === 0">€39.99 €</span>
-                    <span v-else-if="i === 1">€39.99</span>
-                    <span v-else-if="i === 2">€39.99</span>
-                    <span v-else>€39.99</span>
-                  </span>
-                </p>
-              </div>
-            </div>
+        <router-link
+  :to="getCategoryLink(i)"
+  class="category-card-enhanced"
+  style="text-decoration: none; color: inherit;"
+>
+  <div class="category-image-wrapper">
+    <img :src="categoryImages[i]" alt="Perfume Category" class="category-image" />
+  </div>
+  <div class="category-info">
+    <h6 class="category-title">
+      <span v-if="i === 0">Parfume për meshkuj</span>
+      <span v-else-if="i === 1">Parfume për femra</span>
+      <span v-else-if="i === 2">Parfuma Arab</span>
+      <span v-else>Sol De Janeiro</span>
+    </h6>
+    <p class="category-price">
+      Starting from
+      <span class="price-highlight">
+        <span v-if="i === 0">€39.99 €</span>
+        <span v-else-if="i === 1">€39.99</span>
+        <span v-else-if="i === 2">€39.99</span>
+        <span v-else>€17.99</span>
+      </span>
+    </p>
+  </div>
+</router-link>
           </div>
         </div>
       </div>
@@ -209,10 +212,10 @@
           <i class="fas fa-spinner fa-spin"></i>
         </div>
       </div>
-      <img 
-        :src="product.imageUrl" 
-        loading="lazy" 
-        :alt="product.title" 
+      <img
+        :src="product.imageUrl"
+        loading="lazy"
+        :alt="product.title"
         class="product-image-enhanced"
         @loadstart="handleImageLoadStart(product.id)"
         @load="handleImageLoad(product.id)"
@@ -231,15 +234,15 @@
     </div>
   </div>
 </router-link>
-          
+
         </div>
       <div class="pagination-wrapper" v-if="totalBestSellingPages > 1">
   <nav class="pagination-nav">
     <ul class="pagination-list">
       <!-- Previous Button -->
       <li class="pagination-item">
-        <button 
-          class="pagination-btn pagination-btn-nav" 
+        <button
+          class="pagination-btn pagination-btn-nav"
           @click="prevBestSellingPage"
           :disabled="currentBestSellingPage === 1"
           :class="{ 'disabled': currentBestSellingPage === 1 }"
@@ -247,22 +250,22 @@
           <i class="fas fa-chevron-left"></i>
         </button>
       </li>
-      
+
       <!-- Page Numbers -->
       <li class="pagination-item" v-for="page in bestSellingPaginationNumbers" :key="page">
-        <button 
-          class="pagination-btn pagination-btn-number" 
+        <button
+          class="pagination-btn pagination-btn-number"
           @click="goToBestSellingPage(page)"
           :class="{ 'active': currentBestSellingPage === page }"
         >
           {{ page }}
         </button>
       </li>
-      
+
       <!-- Next Button -->
       <li class="pagination-item">
-        <button 
-          class="pagination-btn pagination-btn-nav" 
+        <button
+          class="pagination-btn pagination-btn-nav"
           @click="nextBestSellingPage"
           :disabled="currentBestSellingPage === totalBestSellingPages"
           :class="{ 'disabled': currentBestSellingPage === totalBestSellingPages }"
@@ -271,11 +274,11 @@
         </button>
       </li>
     </ul>
-    
+
     <!-- Page Info -->
     <div class="pagination-info">
       <span class="pagination-text">
-        Page {{ currentBestSellingPage }} of {{ totalBestSellingPages }} 
+        Page {{ currentBestSellingPage }} of {{ totalBestSellingPages }}
         ({{ allBestSellingProducts.length }} products)
       </span>
     </div>
@@ -373,9 +376,9 @@
           <i class="fas fa-spinner fa-spin"></i>
         </div>
       </div>
-      <img 
-        :src="product.imageUrl" 
-        :alt="product.title" 
+      <img
+        :src="product.imageUrl"
+        :alt="product.title"
         class="product-image-enhanced"
         @loadstart="handleImageLoadStart(product.id)"
         @load="handleImageLoad(product.id)"
@@ -403,8 +406,8 @@
     <ul class="pagination-list">
       <!-- Previous Button -->
       <li class="pagination-item">
-        <button 
-          class="pagination-btn pagination-btn-nav" 
+        <button
+          class="pagination-btn pagination-btn-nav"
           @click="prevNewProductsPage"
           :disabled="currentNewProductsPage === 1"
           :class="{ 'disabled': currentNewProductsPage === 1 }"
@@ -412,22 +415,22 @@
           <i class="fas fa-chevron-left"></i>
         </button>
       </li>
-      
+
       <!-- Page Numbers -->
       <li class="pagination-item" v-for="page in newProductsPaginationNumbers" :key="page">
-        <button 
-          class="pagination-btn pagination-btn-number" 
+        <button
+          class="pagination-btn pagination-btn-number"
           @click="goToNewProductsPage(page)"
           :class="{ 'active': currentNewProductsPage === page }"
         >
           {{ page }}
         </button>
       </li>
-      
+
       <!-- Next Button -->
       <li class="pagination-item">
-        <button 
-          class="pagination-btn pagination-btn-nav" 
+        <button
+          class="pagination-btn pagination-btn-nav"
           @click="nextNewProductsPage"
           :disabled="currentNewProductsPage === totalNewProductsPages"
           :class="{ 'disabled': currentNewProductsPage === totalNewProductsPages }"
@@ -436,11 +439,11 @@
         </button>
       </li>
     </ul>
-    
+
     <!-- Page Info -->
     <div class="pagination-info">
       <span class="pagination-text">
-        Page {{ currentNewProductsPage }} of {{ totalNewProductsPages }} 
+        Page {{ currentNewProductsPage }} of {{ totalNewProductsPages }}
         ({{ allNewProducts.length }} products)
       </span>
     </div>
@@ -508,7 +511,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="footer-bottom">
         <div class="container">
           <div class="row align-items-center">
@@ -532,8 +535,6 @@
 </template>
 
 <script>
-import { db } from '@/firebase'
-import { collection, getDocs, query, orderBy } from 'firebase/firestore'
 import heroImg from '@/assets/background.jpeg'
 import img0 from '@/assets/FullSizeRender.jpeg'
 import img1 from '@/assets/soul1.jpeg'
@@ -563,7 +564,7 @@ export default {
       // Pagination for Best Selling
     currentBestSellingPage: 1,
     bestSellingItemsPerPage: 6,
-    
+
     // Pagination for New Products
     currentNewProductsPage: 1,
     newProductsItemsPerPage: 6,
@@ -587,7 +588,7 @@ computed: {
     if (!this.searchQuery) return [];
     return productService.searchProducts(this.searchQuery).slice(0, 8);
   },
-  
+
   // Best Selling Products
   filteredBestSellingProducts() {
     if (!this.searchQuery) return this.allBestSellingProducts;
@@ -597,36 +598,36 @@ computed: {
            (p.category && p.category.toLowerCase().includes(q))
     );
   },
-  
+
   totalBestSellingPages() {
     return Math.ceil(this.filteredBestSellingProducts.length / this.bestSellingItemsPerPage);
   },
-  
+
   displayedBestSelling() {
     const start = (this.currentBestSellingPage - 1) * this.bestSellingItemsPerPage;
     const end = start + this.bestSellingItemsPerPage;
     return this.filteredBestSellingProducts.slice(start, end);
   },
-  
+
   bestSellingPaginationNumbers() {
     const total = this.totalBestSellingPages;
     const current = this.currentBestSellingPage;
     const delta = 2;
-    
+
     let pages = [];
-    
+
     if (total > 0) pages.push(1);
-    
+
     for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
       if (!pages.includes(i)) pages.push(i);
     }
-    
+
     if (total > 1 && !pages.includes(total)) pages.push(total);
-    
+
     return pages;
   },
 
-  // New Products  
+  // New Products
   filteredNewProducts() {
     if (!this.searchQuery) return this.allNewProducts;
     const q = this.searchQuery.toLowerCase();
@@ -635,36 +636,42 @@ computed: {
            (p.category && p.category.toLowerCase().includes(q))
     );
   },
-  
+
   totalNewProductsPages() {
     return Math.ceil(this.filteredNewProducts.length / this.newProductsItemsPerPage);
   },
-  
+
   displayedNewProducts() {
     const start = (this.currentNewProductsPage - 1) * this.newProductsItemsPerPage;
     const end = start + this.newProductsItemsPerPage;
     return this.filteredNewProducts.slice(start, end);
   },
-  
+
   newProductsPaginationNumbers() {
     const total = this.totalNewProductsPages;
     const current = this.currentNewProductsPage;
     const delta = 2;
-    
+
     let pages = [];
-    
+
     if (total > 0) pages.push(1);
-    
+
     for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
       if (!pages.includes(i)) pages.push(i);
     }
-    
+
     if (total > 1 && !pages.includes(total)) pages.push(total);
-    
+
     return pages;
   }
 },
 methods: {
+    getCategoryLink(i) {
+    if (i === 0) return { path: '/categories', query: { category: 'Parfume për meshkuj' } }
+    if (i === 1) return { path: '/categories', query: { category: 'Parfume për femra' } }
+    if (i === 2) return { path: '/categories', query: { category: 'Parfuma Arab' } }
+    return { path: '/categories', query: { category: 'Sol de Janeiro' } }
+  },
     handleSearch() {
          if (this.searchQuery.trim()) {
       // Navigate to categories page with search query
@@ -678,11 +685,11 @@ methods: {
      handleImageLoadStart(productId) {
       this.$set(this.imageLoadingStates, productId, true)
     },
-    
+
     handleImageLoad(productId) {
       this.$set(this.imageLoadingStates, productId, false)
     },
-    
+
     isImageLoading(productId) {
       return this.imageLoadingStates[productId] === true
     },
@@ -713,7 +720,7 @@ methods: {
       this.goToBestSellingPage(this.currentBestSellingPage - 1);
     }
   },
-  
+
   // New Products Pagination Methods
   goToNewProductsPage(page) {
     if (page >= 1 && page <= this.totalNewProductsPages) {
@@ -1665,15 +1672,15 @@ methods: {
   .hero-title {
     font-size: 2.5rem;
   }
-  
+
   .collection-content {
     padding: 40px 20px;
   }
-  
+
   .collection-title {
     font-size: 2rem;
   }
-  
+
   .search-box-enhanced {
     width: 100%;
     margin-top: 15px;
@@ -1684,40 +1691,40 @@ methods: {
   .hero-title {
     font-size: 2rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1rem;
   }
-  
+
   .hero-buttons {
     justify-content: center;
   }
-  
+
   .section-title {
     font-size: 2rem;
   }
-  
+
   .product-categories-enhanced {
     flex-direction: column;
     border-radius: 15px;
     width: 100%;
   }
-  
+
   .product-categories-enhanced .nav-link {
     text-align: center;
     border-radius: 10px;
   }
-  
+
   .collection-features {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
   }
-  
+
   .feature-item {
     flex-basis: 48%;
   }
-  
+
   .payment-methods {
     justify-content: center;
     margin-top: 20px;
@@ -1728,26 +1735,26 @@ methods: {
   .hero-banner-enhanced {
     height: 400px;
   }
-  
+
   .hero-content-enhanced {
     text-align: center;
     padding: 0 20px;
   }
-  
+
   .hero-title {
     font-size: 1.8rem;
   }
-  
+
   .btn-primary-enhanced,
   .btn-outline-light-enhanced {
     padding: 12px 24px;
     font-size: 14px;
   }
-  
+
   .product-card-enhanced {
     padding: 15px;
   }
-  
+
   .product-image-container-enhanced {
     height: 150px;
   }
@@ -1894,13 +1901,13 @@ methods: {
     gap: 4px;
     padding: 6px;
   }
-  
+
   .pagination-btn {
     min-width: 36px;
     height: 36px;
     font-size: 13px;
   }
-  
+
   .pagination-text {
     font-size: 12px;
   }
@@ -1910,7 +1917,7 @@ methods: {
   .pagination-wrapper {
     margin-top: 30px;
   }
-  
+
   .pagination-list {
     flex-wrap: wrap;
     justify-content: center;
@@ -1919,13 +1926,13 @@ methods: {
     box-shadow: none;
     border: 1px solid #e9ecef;
   }
-  
+
   .pagination-btn {
     min-width: 32px;
     height: 32px;
     font-size: 12px;
   }
-  
+
   .pagination-nav {
     gap: 10px;
   }
@@ -2090,50 +2097,50 @@ methods: {
     padding: 20px;
     border: 1px solid #e9ecef;
   }
-  
+
   .mobile-nav-menu {
     flex-direction: column;
     width: 100%;
     margin: 0 0 20px 0 !important;
   }
-  
+
   .mobile-nav-menu .nav-item {
     width: 100%;
     text-align: center;
     border-bottom: 1px solid #f1f3f4;
   }
-  
+
   .mobile-nav-menu .nav-item:last-child {
     border-bottom: none;
   }
-  
+
   .nav-link-enhanced {
     padding: 15px 20px !important;
     font-size: 16px;
     width: 100%;
     display: block;
   }
-  
+
   .nav-link-enhanced:hover {
     background: #f8f9fa;
     border-radius: 10px;
   }
-  
+
   /* Mobile search */
   .mobile-search {
     display: block;
     width: 100%;
     margin-top: 15px;
   }
-  
+
   .desktop-search {
     display: none;
   }
-  
+
   .search-box-enhanced {
     width: 100%;
   }
-  
+
   .search-box-enhanced input {
     width: 100%;
     padding: 15px 50px 15px 20px;
@@ -2146,11 +2153,11 @@ methods: {
   .mobile-search {
     display: none;
   }
-  
+
   .desktop-search {
     display: block;
   }
-  
+
   .mobile-toggle {
     display: none;
   }
@@ -2170,11 +2177,11 @@ methods: {
   .brand-logo h4 {
     font-size: 1.3rem;
   }
-  
+
   .brand-tagline {
     font-size: 10px;
   }
-  
+
   .navbar {
     padding: 0.75rem 0;
   }

@@ -6,15 +6,15 @@
     <a class="navbar-brand brand-logo" href="/">
       <img src="@/assets/logopp.svg" alt="Parfumania Logo" style="height: 45px;" />
     </a>
-    
+
     <!-- Mobile toggle button -->
-    <button 
-      class="navbar-toggler mobile-toggle" 
-      type="button" 
-      data-bs-toggle="collapse" 
+    <button
+      class="navbar-toggler mobile-toggle"
+      type="button"
+      data-bs-toggle="collapse"
       data-bs-target="#navbarNav"
-      aria-controls="navbarNav" 
-      aria-expanded="false" 
+      aria-controls="navbarNav"
+      aria-expanded="false"
       aria-label="Toggle navigation"
     >
       <span class="mobile-toggle-icon">
@@ -23,7 +23,7 @@
         <span></span>
       </span>
     </button>
-    
+
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mx-auto mobile-nav-menu">
       <li class="nav-item ">
@@ -36,7 +36,7 @@
   <a class="nav-link nav-link-enhanced" href="/" @click="closeMobileMenu">SHOP</a>
 </li> -->
       </ul>
-      
+
       <!-- Mobile search (will be hidden on desktop, shown in mobile menu) -->
     <!-- Mobile search (will be hidden on desktop, shown in mobile menu) -->
       <div class="search-box-enhanced mobile-search">
@@ -62,7 +62,7 @@
           <li v-if="liveSearchResults.length === 0" class="no-results">No results found.</li>
         </ul>
       </div>
-      
+
       <!-- Desktop search (hidden on mobile) -->
       <div class="search-box-enhanced desktop-search">
         <input
@@ -103,31 +103,30 @@
       <!-- Category Filter Section -->
       <div class="filter-section">
         <h2 class="section-title">Kategoritë</h2>
-        
+
         <!-- Search and Filter Controls -->
-        <div class="filter-controls">
-          <!-- <div class="search-container">
-            <i class="fas fa-search search-icon"></i>
-            <input 
-              v-model="searchTerm" 
-              type="text" 
-              placeholder="Kërkoni një markë..."
-              class="search-input"
-              @input="filterCategories"
-            />
-          </div> -->
-          
-          <div class="view-toggle">
-            <button 
-              class="toggle-btn"
-              :class="{ active: showAllCategories }"
-              @click="toggleCategoryView"
-            >
-              <i class="fas fa-th-large"></i>
-              {{ showAllCategories ? 'Minimizo' : 'Shfaq të gjitha kategorite' }}
-            </button>
-          </div>
-        </div>
+       <div class="filter-controls">
+  <div class="search-container">
+    <i class="fas fa-search search-icon"></i>
+    <input
+      v-model="searchTerm"
+      type="text"
+      placeholder="Kërkoni një produkt..."
+      class="search-input"
+      @input="fetchProducts"
+    />
+  </div>
+  <div class="view-toggle">
+    <button
+      class="toggle-btn"
+      :class="{ active: showAllCategories }"
+      @click="toggleCategoryView"
+    >
+      <i class="fas fa-th-large"></i>
+      {{ showAllCategories ? 'Minimizo' : 'Shfaq të gjitha kategorite' }}
+    </button>
+  </div>
+</div>
 
         <!-- Category Display -->
         <div class="category-display">
@@ -149,22 +148,22 @@
               <i class="fas fa-crown"></i>
               Markat
             </h3>
-            
+
             <!-- Pagination Controls -->
             <div class="pagination-controls">
-              <button 
+              <button
                 class="pagination-btn"
                 :disabled="currentPage === 1"
                 @click="changePage(currentPage - 1)"
               >
                 <i class="fas fa-chevron-left"></i>
               </button>
-              
+
               <span class="page-info">
                 {{ currentPage }} / {{ totalPages }}
               </span>
-              
-              <button 
+
+              <button
                 class="pagination-btn"
                 :disabled="currentPage === totalPages"
                 @click="changePage(currentPage + 1)"
@@ -183,7 +182,7 @@
                 @click="selectCategory(brand.name)"
                 :title="brand.name"
               >
-              
+
                 <span class="brand-text">{{ brand.name }}</span>
               </button>
             </div>
@@ -219,9 +218,9 @@
 
         <!-- Products Grid -->
        <div v-else class="products-grid">
-  <div 
-    v-for="(product, index) in products" 
-    :key="product.id" 
+  <div
+    v-for="(product, index) in products"
+    :key="product.id"
     class="product-card"
     :style="{ animationDelay: `${index * 0.1}s` }"
   >
@@ -233,9 +232,9 @@
             <i class="fas fa-spinner fa-spin"></i>
           </div>
         </div>
-        <img 
-          :src="product.imageUrl" 
-          :alt="product.title" 
+        <img
+          :src="product.imageUrl"
+          :alt="product.title"
           class="product-image"
           @loadstart="handleImageLoadStart(product.id)"
           @load="handleImageLoad(product.id)"
@@ -247,7 +246,7 @@
       </router-link>
       <div class="product-badge">{{ product.category }}</div>
     </div>
-    
+
     <div class="product-content">
       <h3 class="product-title">{{ product.title }}</h3>
       <div class="product-price">
@@ -263,8 +262,6 @@
 </template>
 
 <script>
-import { db } from '@/firebase'
-import { collection, getDocs, query, where, orderBy } from 'firebase/firestore'
 import productService from '@/services/productService'
 
 
@@ -273,7 +270,7 @@ export default {
     return {
       // Basic categories
       basicCategories: ['Parfume', 'Kremra', 'Deodorant'],
-      
+
       // All brand categories with Font Awesome icons
       brandCategories: [
         { name: 'Alien Miglei' },
@@ -318,7 +315,7 @@ export default {
         { name: 'XERIOEFF' },
         { name: 'YSL' }
       ],
-      
+
       selectedCategory: '',
       products: [],
       allProductsCache: [], // Cache all products for navbar search
@@ -328,49 +325,49 @@ export default {
       filteredBrands: [],
       currentPage: 1,
       brandsPerPage: 12,
-      
+
       // Add search functionality properties
       navSearchQuery: '', // For navbar search
       navSearchFocused: false,
          imageLoadingStates: {}
     }
   },
-  
+
   computed: {
     paginatedBrands() {
       const start = (this.currentPage - 1) * this.brandsPerPage
       const end = start + this.brandsPerPage
       return this.filteredBrands.slice(start, end)
     },
-    
+
     totalPages() {
       return Math.ceil(this.filteredBrands.length / this.brandsPerPage)
     },
-    
+
     // Search results for navbar using cached products
       liveSearchResults() {
       if (!this.navSearchQuery) return [];
       return productService.searchProducts(this.navSearchQuery).slice(0, 8);
     },
   },
-  
+
   async created() {
     this.filteredBrands = [...this.brandCategories]
-    
+
     const categoryFromQuery = this.$route.query.category
     if (categoryFromQuery) {
       this.selectedCategory = categoryFromQuery
     }
-    
+
     const searchFromQuery = this.$route.query.search
     if (searchFromQuery) {
       this.searchTerm = searchFromQuery
       this.filterCategories()
     }
-    
+
     await this.fetchProducts()
   },
-  
+
   methods: {
     closeMobileMenu() {
       const navbarCollapse = document.getElementById('navbarNav')
@@ -379,7 +376,7 @@ export default {
         bsCollapse.hide()
       }
     },
-    
+
     // Add navbar search methods
     handleNavSearch() {
       if (this.navSearchQuery.trim()) {
@@ -389,13 +386,13 @@ export default {
         this.filterCategories()
         this.fetchProducts()
         this.navSearchFocused = false
-        
+
         // Update URL with search query
         this.$router.replace({
           path: '/categories',
           query: { search: this.searchTerm }
         })
-        
+
         // Scroll to products section
         this.$nextTick(() => {
           const productsSection = document.querySelector('.products-section')
@@ -404,31 +401,43 @@ export default {
           }
         })
       }
-    },
-    
-       async fetchProducts() {
-      this.loading = true
-      try {
-        if (this.searchTerm) {
-          this.products = await productService.searchProducts(this.searchTerm)
-        } else if (this.selectedCategory) {
-          this.products = await productService.getProductsByCategory(this.selectedCategory)
-        } else {
-          this.products = await productService.getProducts()
-        }
-      } catch (err) {
-        console.error('Error fetching products:', err)
-      } finally {
-        this.loading = false
+    },  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+
+  async fetchProducts() {
+    this.loading = true
+    try {
+      // Handle virtual categories
+      if (['Parfume për meshkuj', 'Parfume për femra', 'Parfuma Arab'].includes(this.selectedCategory)) {
+        const all = await productService.getProducts()
+        let keyword = ''
+        if (this.selectedCategory === 'Parfume për meshkuj') keyword = 'men'
+        if (this.selectedCategory === 'Parfume për femra') keyword = 'women'
+        if (this.selectedCategory === 'Parfuma Arab') keyword = 'arab'
+        this.products = all.filter(p =>
+          p.title && p.title.toLowerCase().includes(keyword)
+        )
+      } else if (this.searchTerm) {
+        this.products = await productService.searchProducts(this.searchTerm)
+      } else if (this.selectedCategory) {
+        this.products = await productService.getProductsByCategory(this.selectedCategory)
+      } else {
+        this.products = await productService.getProducts()
       }
-    },
-    
+    } catch (err) {
+      console.error('Error fetching products:', err)
+    } finally {
+      this.loading = false
+    }
+  },
+
     selectCategory(cat) {
       this.selectedCategory = cat
       this.searchTerm = '' // Clear search when selecting category
       this.navSearchQuery = '' // Clear navbar search
       this.fetchProducts()
-      
+
       // Update URL
       if (cat) {
         this.$router.replace({
@@ -438,7 +447,7 @@ export default {
       } else {
         this.$router.replace('/categories')
       }
-      
+
       // Scroll to products section
       this.$nextTick(() => {
         const productsSection = document.querySelector('.products-section')
@@ -447,11 +456,11 @@ export default {
         }
       })
     },
-    
+
     toggleCategoryView() {
       this.showAllCategories = !this.showAllCategories
     },
-    
+
     filterCategories() {
       if (!this.searchTerm) {
         this.filteredBrands = [...this.brandCategories]
@@ -462,33 +471,33 @@ export default {
       }
       this.currentPage = 1
     },
-    
+
     changePage(page) {
       if (page >= 1 && page <= this.totalPages) {
         this.currentPage = page
       }
     },
-    
+
     getSelectedCategoryIcon() {
       if (this.selectedCategory === 'Parfume') return 'fas fa-spray-can'
       if (this.selectedCategory === 'Kremra') return 'fas fa-tint'
       if (this.selectedCategory === 'Deodorant') return 'fas fa-wind'
-      
+
       const brand = this.brandCategories.find(b => b.name === this.selectedCategory)
       return brand ? brand.icon : 'fas fa-tag'
     },
       handleImageLoadStart(productId) {
       this.$set(this.imageLoadingStates, productId, true)
     },
-    
+
     handleImageLoad(productId) {
       this.$set(this.imageLoadingStates, productId, false)
     },
-    
+
     isImageLoading(productId) {
       return this.imageLoadingStates[productId] === true
     },
-    
+
     handleImageError(event, productId = null) {
       event.target.src = 'https://media.istockphoto.com/id/1452662817/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=bGI_FngX0iexE3EBANPw9nbXkrJJA4-dcEJhCrP8qMw='
       if (productId) {
@@ -1156,55 +1165,55 @@ export default {
   .hero-title {
     font-size: 2.5rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1.1rem;
   }
-  
+
   .section-title {
     font-size: 2rem;
   }
-  
+
   .filter-controls {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .search-container {
     max-width: 100%;
   }
-  
+
   .quick-filters {
     gap: 10px;
   }
-  
+
   .category-btn {
     padding: 12px 20px;
     font-size: 0.9rem;
   }
-  
+
   .brand-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 12px;
   }
-  
+
   .brand-btn {
     padding: 15px 10px;
   }
-  
+
   .brand-text {
     font-size: 0.8rem;
   }
-  
+
   .products-grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
   }
-  
+
   .product-content {
     padding: 10px;
   }
-  
+
   .main-content {
     padding: 30px 15px;
   }
@@ -1214,60 +1223,60 @@ export default {
   .hero-section {
     padding: 60px 15px 40px;
   }
-  
+
   .hero-title {
     font-size: 2rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1rem;
   }
-  
+
   .filter-controls {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .quick-filters {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .category-btn {
     width: 100%;
     max-width: 280px;
     justify-content: center;
   }
-  
+
   .brand-categories {
     padding: 20px;
   }
-  
+
   .brand-grid {
     grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
     gap: 10px;
   }
-  
+
   .brand-btn {
     padding: 12px 8px;
   }
-  
+
   .brand-icon {
     font-size: 1.3rem;
   }
-  
+
   .brand-text {
     font-size: 0.75rem;
   }
-  
+
   .products-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .pagination-controls {
     gap: 15px;
   }
-  
+
   .pagination-btn {
     width: 35px;
     height: 35px;
@@ -1346,50 +1355,50 @@ export default {
     padding: 20px;
     border: 1px solid #e9ecef;
   }
-  
+
   .mobile-nav-menu {
     flex-direction: column;
     width: 100%;
     margin: 0 0 20px 0 !important;
   }
-  
+
   .mobile-nav-menu .nav-item {
     width: 100%;
     text-align: center;
     border-bottom: 1px solid #f1f3f4;
   }
-  
+
   .mobile-nav-menu .nav-item:last-child {
     border-bottom: none;
   }
-  
+
   .nav-link-enhanced {
     padding: 15px 20px !important;
     font-size: 16px;
     width: 100%;
     display: block;
   }
-  
+
   .nav-link-enhanced:hover {
     background: #f8f9fa;
     border-radius: 10px;
   }
-  
+
   /* Mobile search */
   .mobile-search {
     display: block;
     width: 100%;
     margin-top: 15px;
   }
-  
+
   .desktop-search {
     display: none;
   }
-  
+
   .search-box-enhanced {
     width: 100%;
   }
-  
+
   .search-box-enhanced input {
     width: 100%;
     padding: 15px 50px 15px 20px;
@@ -1402,11 +1411,11 @@ export default {
   .mobile-search {
     display: none;
   }
-  
+
   .desktop-search {
     display: block;
   }
-  
+
   .mobile-toggle {
     display: none;
   }
@@ -1426,11 +1435,11 @@ export default {
   .brand-logo h4 {
     font-size: 1.3rem;
   }
-  
+
   .brand-tagline {
     font-size: 10px;
   }
-  
+
   .navbar {
     padding: 0.75rem 0;
   }

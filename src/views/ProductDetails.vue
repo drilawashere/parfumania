@@ -1,18 +1,18 @@
 <template>
- <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
   <div class="container">
-     <a class="navbar-brand brand-logo" href="/">
+  <a class="navbar-brand brand-logo" href="/">
       <img src="@/assets/logopp.svg" alt="Parfumania Logo" style="height: 45px;" />
     </a>
-    
+
     <!-- Mobile toggle button -->
-    <button 
-      class="navbar-toggler mobile-toggle" 
-      type="button" 
-      data-bs-toggle="collapse" 
+    <button
+      class="navbar-toggler mobile-toggle"
+      type="button"
+      data-bs-toggle="collapse"
       data-bs-target="#navbarNav"
-      aria-controls="navbarNav" 
-      aria-expanded="false" 
+      aria-controls="navbarNav"
+      aria-expanded="false"
       aria-label="Toggle navigation"
     >
       <span class="mobile-toggle-icon">
@@ -21,22 +21,46 @@
         <span></span>
       </span>
     </button>
-    
+
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mx-auto mobile-nav-menu">
-      <li class="nav-item">
-  <a class="nav-link nav-link-enhanced" href="/" @click="closeMobileMenu">HOME</a>
-</li>
-<li class="nav-item">
-  <router-link class="nav-link nav-link-enhanced" to="/categories" @click="closeMobileMenu">CATEGORIES</router-link>
-</li>
-<!-- <li class="nav-item">
-  <a class="nav-link nav-link-enhanced" href="/" @click="closeMobileMenu">SHOP</a>
-</li> -->
+        <li class="nav-item">
+          <a class="nav-link nav-link-enhanced" href="/" @click="closeMobileMenu">HOME</a>
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link nav-link-enhanced" to="/categories" @click="closeMobileMenu">CATEGORIES</router-link>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link nav-link-enhanced" href="/" @click="closeMobileMenu">SHOP</a>
+        </li> -->
       </ul>
-      
-      <!-- Mobile search (will be hidden on desktop, shown in mobile menu) -->
-  
+
+      <!-- Search Bar (add here) -->
+      <div class="search-box-enhanced desktop-search ms-3">
+        <input
+          v-model="searchTerm"
+          type="text"
+          class="form-control"
+          placeholder="Kërkoni një produkt..."
+          @input="onSearch"
+        />
+        <button class="search-btn" @click="onSearch">
+          <i class="fas fa-search"></i>
+        </button>
+      <ul v-if="searchTerm && searchResults.length" class="search-dropdown">
+  <li v-for="result in searchResults" :key="result.id">
+ <router-link
+  :to="`/product/${result.id}`"
+  @click="handleSearchResultClick"
+>
+      <img :src="result.imageUrl" alt="" class="dropdown-thumb" />
+      {{ result.title }}
+    </router-link>
+  </li>
+  <li v-if="searchResults.length === 0" class="no-results">No results found.</li>
+</ul>
+      </div>
+      <!-- End Search Bar -->
     </div>
   </div>
 </nav>
@@ -45,8 +69,8 @@
       <!-- Thumbnail Gallery -->
       <div class="col-md-1">
         <div class="thumbnail-gallery">
-          <div 
-            v-for="(image, index) in productImages" 
+          <div
+            v-for="(image, index) in productImages"
             :key="index"
             class="product-thumbnail mb-3"
             :class="{ active: selectedImageIndex === index }"
@@ -61,10 +85,10 @@
       <div class="col-md-5">
         <div class="product-main-image">
           <div class="image-container" @mousemove="handleImageZoom" @mouseleave="resetZoom">
-            <img 
+            <img
               ref="mainImage"
-              :src="productImages[selectedImageIndex]" 
-              :alt="product.title" 
+              :src="productImages[selectedImageIndex]"
+              :alt="product.title"
               class="img-fluid main-image"
               :style="zoomStyle"
             />
@@ -78,8 +102,8 @@
         </div>
         <!-- Mobile Thumbnail Gallery (visible only on mobile) -->
 <div class="mobile-thumbnail-gallery d-md-none">
-  <div 
-    v-for="(image, index) in productImages.slice(1)" 
+  <div
+    v-for="(image, index) in productImages.slice(1)"
     :key="index + 1"
     class="mobile-product-thumbnail"
     :class="{ active: selectedImageIndex === index + 1 }"
@@ -98,8 +122,8 @@
           <!-- Interactive Star Rating -->
           <!-- <div class="rating-section mb-3">
             <div class="rating mb-1">
-              <i 
-                v-for="star in 5" 
+              <i
+                v-for="star in 5"
                 :key="star"
                 class="fas fa-star"
                 :class="{ filled: star <= Math.floor(product.rating || 4.5) }"
@@ -109,7 +133,7 @@
               </span>
             </div>
           </div> -->
-          
+
           <!-- Dynamic Pricing -->
           <div class="pricing-section mb-4">
             <div v-if="product.originalPrice && product.originalPrice > product.price" class="price-comparison">
@@ -119,10 +143,10 @@
             </div>
             <h3 v-else class="current-price text-success">${{ product.price }}</h3>
           </div>
-          
+
           <!-- Stock Status -->
           <div class="stock-status mb-3">
-            <span 
+            <span
               class="badge"
               :class="stockStatusClass"
             >
@@ -132,7 +156,7 @@
               Only {{ product.stock }} left in stock!
             </span>
           </div>
-          
+
           <!-- Description with Read More -->
           <div class="description-section mb-4">
            <p
@@ -149,7 +173,7 @@
   {{ showFullDescription ? 'Read Less' : 'Read More' }}
 </button>
           </div>
-          
+
           <!-- Enhanced Features -->
           <!-- <div class="features-section mb-4">
             <h6 class="fw-bold mb-2">Key Features:</h6>
@@ -179,31 +203,31 @@
               </button>
             </div>
           </div>
-          
+
           <!-- Quantity and Actions -->
           <div class="purchase-section">
             <div class="d-flex align-items-center mb-4">
               <div class="quantity-selector me-3">
                 <label class="form-label small fw-bold">Quantity:</label>
                 <div class="input-group quantity-input">
-                  <button 
-                    class="btn btn-outline-secondary" 
+                  <button
+                    class="btn btn-outline-secondary"
                     type="button"
                     @click="decreaseQuantity"
                     :disabled="quantity <= 1"
                   >
                     <i class="fas fa-minus"></i>
                   </button>
-                  <input 
-                    type="number" 
-                    class="form-control text-center" 
+                  <input
+                    type="number"
+                    class="form-control text-center"
                     v-model.number="quantity"
                     @input="validateQuantity"
                     min="1"
                     :max="product.stock || 999"
                   >
-                  <button 
-                    class="btn btn-outline-secondary" 
+                  <button
+                    class="btn btn-outline-secondary"
                     type="button"
                     @click="increaseQuantity"
                     :disabled="quantity >= (product.stock || 999)"
@@ -215,7 +239,7 @@
             </div>
 
             <div class="action-buttons mb-4">
-              <button 
+              <button
                 class="btn btn-success btn-lg me-3 add-to-cart-btn"
                 @click="addToCart"
                 :disabled="!canAddToCart"
@@ -234,16 +258,16 @@
 
           <!-- Enhanced Product Metadata -->
           <div class="product-meta">
-            
+
             <div class="meta-item mb-2">
-              <strong>Category:</strong> 
+              <strong>Category:</strong>
               <span class="badge bg-light text-dark ms-1">{{ product.category }}</span>
             </div>
             <div v-if="product.tags" class="meta-item mb-2">
               <strong>Tags:</strong>
-              <span 
-                v-for="tag in product.tags.split(',')" 
-                :key="tag.trim()" 
+              <span
+                v-for="tag in product.tags.split(',')"
+                :key="tag.trim()"
                 class="badge bg-secondary ms-1"
               >
                 {{ tag.trim() }}
@@ -266,14 +290,14 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Enhanced Tab Navigation -->
     <div class="row mt-5">
       <div class="col-12">
         <ul class="nav nav-tabs product-tabs">
           <li class="nav-item">
-            <a 
-              class="nav-link" 
+            <a
+              class="nav-link"
               :class="{ active: activeTab === 'description' }"
               @click="activeTab = 'description'"
               href="#"
@@ -282,7 +306,7 @@
             </a>
           </li>
         </ul>
-        
+
         <!-- Tab Content -->
         <div class="tab-content mt-4">
           <div v-if="activeTab === 'description'" class="tab-pane active">
@@ -294,7 +318,7 @@
               </div>
             </div>
           </div>
-          
+
           <div v-if="activeTab === 'specifications'" class="tab-pane active">
             <div class="tab-content-section">
               <h5>Product Specifications</h5>
@@ -306,7 +330,7 @@
               </div>
             </div>
           </div>
-          
+
           <!-- <div v-if="activeTab === 'reviews'" class="tab-pane active">
             <div class="tab-content-section">
               <h5>Customer Reviews</h5>
@@ -322,13 +346,13 @@
               <p class="text-muted">Reviews section would display actual customer reviews here.</p>
             </div>
           </div> -->
-          
-       
+
+
         </div>
       </div>
     </div>
   </div>
-  
+
   <div v-else class="loading-container">
     <div class="spinner-border text-success" role="status">
       <span class="visually-hidden">Loading...</span>
@@ -338,8 +362,8 @@
 </template>
 
 <script>
-import { db } from '@/firebase'
-import { doc, getDoc } from 'firebase/firestore'
+import productService from '@/services/productService'
+
 
 export default {
   data() {
@@ -352,6 +376,10 @@ export default {
       isInWishlist: false,
       showFullDescription: false,
       zoomStyle: {},
+  loading: true,
+    searchTerm: '',
+    searchResults: [],
+
     }
   },
   computed: {
@@ -368,7 +396,7 @@ export default {
       if (this.product.feature1) features.push(this.product.feature1)
       if (this.product.feature2) features.push(this.product.feature2)
       if (this.product.features) features.push(...this.product.features)
-      
+
       // Default features if none provided
       if (features.length === 0) {
         features.push(
@@ -386,7 +414,7 @@ export default {
       if (this.product.material) specs.push({ label: 'Material', value: this.product.material })
       if (this.product.color) specs.push({ label: 'Color', value: this.product.color })
       if (this.product.brand) specs.push({ label: 'Brand', value: this.product.brand })
-      
+
       // Default specs
       if (specs.length === 0) {
         specs.push(
@@ -408,32 +436,70 @@ export default {
       if (this.product.stock < 10) return 'Low Stock'
       return 'In Stock'
     },
-    canAddToCart() {
-      return this.product.stock > 0 && this.quantity <= this.product.stock
-    },
+   canAddToCart() {
+    // Default stock to 999 if undefined
+    const stock = this.product && typeof this.product.stock === 'number' ? this.product.stock : 999
+    return stock > 0 && this.quantity <= stock
+  },
     totalPrice() {
       const basePrice = this.selectedVariant?.price || this.product.price
       return basePrice * this.quantity
     }
   },
   async created() {
-    const id = this.$route.params.id
-    const docRef = doc(db, 'products', id)
-    const docSnap = await getDoc(docRef)
-    
-    if (docSnap.exists()) {
-      this.product = { 
-        id: docSnap.id, 
-        ...docSnap.data(),
-        price: parseFloat(docSnap.data().price) || 135.00,
-        sku: docSnap.data().sku || '4554251-1',
-        stock: docSnap.data().stock || 50,
-        rating: docSnap.data().rating || 4.5,
-        reviewCount: docSnap.data().reviewCount || 127
+      await this.loadProduct(this.$route.params.id)
+
+    try {
+      // Try to get from cache first
+      const products = await productService.getProducts()
+      this.product = products.find(
+        p => p.id === this.$route.params.id
+      )
+      // Optionally, handle not found
+      if (!this.product) {
+        // Optionally fetch directly or show error
+        // this.product = await productService.getProductById(this.$route.params.id)
       }
+    } catch (err) {
+      console.error('Error fetching product:', err)
+    } finally {
+      this.loading = false
     }
   },
+  watch: {
+  '$route.params.id': {
+    immediate: false,
+    handler(newId) {
+      this.loadProduct(newId)
+    }
+  }
+},
   methods: {
+    async loadProduct(id) {
+    this.loading = true
+    try {
+      const products = await productService.getProducts()
+      this.product = products.find(p => p.id === id)
+      // Optionally handle not found
+    } catch (err) {
+      console.error('Error fetching product:', err)
+    } finally {
+      this.loading = false
+    }
+  },
+  handleSearchResultClick() {
+    this.searchTerm = '';
+    this.searchResults = [];
+    // Optionally close mobile menu if open
+    this.navSearchFocused = false;
+  },
+      onSearch() {
+    if (this.searchTerm) {
+      this.searchResults = productService.searchProducts(this.searchTerm)
+    } else {
+      this.searchResults = []
+    }
+  },
           closeMobileMenu() {
       bsCollapse.hide();
 
@@ -465,7 +531,7 @@ export default {
       imageUrl: this.product.imageUrl,
       quantity: this.quantity || 1
     }
-    
+
   this.$router.push({
   name: 'OrderForm',
   state: { product: productData }
@@ -493,7 +559,7 @@ export default {
       const rect = event.target.getBoundingClientRect()
       const x = ((event.clientX - rect.left) / rect.width) * 100
       const y = ((event.clientY - rect.top) / rect.height) * 100
-      
+
       this.zoomStyle = {
         transformOrigin: `${x}% ${y}%`,
         transform: 'scale(1.5)'
@@ -854,21 +920,21 @@ export default {
   .product-title {
     font-size: 1.4rem;
   }
-  
+
   .current-price {
     font-size: 1.5rem;
   }
-  
+
   .action-buttons {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .add-to-cart-btn {
     width: 100%;
     margin-bottom: 1rem;
   }
-  
+
   .trust-badges .d-flex {
     justify-content: center;
   }
@@ -878,27 +944,27 @@ export default {
   .col-md-1 {
     display: none;
   }
-  
+
   /* Make main image take full width on mobile */
   .col-md-5 {
     flex: 0 0 100%;
     max-width: 100%;
     margin-bottom: 1rem;
   }
-  
+
   /* Product details take full width */
   .col-md-6 {
     flex: 0 0 100%;
     max-width: 100%;
   }
-  
+
   /* Create horizontal thumbnail gallery for mobile */
   .product-main-image::after {
     content: '';
     display: block;
     margin-top: 1rem;
   }
-  
+
   /* Add mobile thumbnail gallery */
   .mobile-thumbnail-gallery {
     display: flex;
@@ -908,21 +974,21 @@ export default {
     margin-top: 15px;
     -webkit-overflow-scrolling: touch;
   }
-  
+
   .mobile-thumbnail-gallery::-webkit-scrollbar {
     height: 4px;
   }
-  
+
   .mobile-thumbnail-gallery::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 2px;
   }
-  
+
   .mobile-thumbnail-gallery::-webkit-scrollbar-thumb {
     background: #8bc34a;
     border-radius: 2px;
   }
-  
+
   .mobile-product-thumbnail {
     flex: 0 0 60px;
     height: 60px;
@@ -932,38 +998,38 @@ export default {
     cursor: pointer;
     transition: all 0.3s ease;
   }
-  
+
   .mobile-product-thumbnail:hover,
   .mobile-product-thumbnail.active {
     border-color: #8bc34a;
     box-shadow: 0 2px 8px rgba(139, 195, 74, 0.3);
   }
-  
+
   .mobile-product-thumbnail img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-  
+
   /* Adjust other mobile styles */
   .product-title {
     font-size: 1.4rem;
   }
-  
+
   .current-price {
     font-size: 1.5rem;
   }
-  
+
   .action-buttons {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .add-to-cart-btn {
     width: 100%;
     margin-bottom: 1rem;
   }
-  
+
   .trust-badges .d-flex {
     justify-content: center;
   }
@@ -1041,50 +1107,50 @@ export default {
     padding: 20px;
     border: 1px solid #e9ecef;
   }
-  
+
   .mobile-nav-menu {
     flex-direction: column;
     width: 100%;
     margin: 0 0 20px 0 !important;
   }
-  
+
   .mobile-nav-menu .nav-item {
     width: 100%;
     text-align: center;
     border-bottom: 1px solid #f1f3f4;
   }
-  
+
   .mobile-nav-menu .nav-item:last-child {
     border-bottom: none;
   }
-  
+
   .nav-link-enhanced {
     padding: 15px 20px !important;
     font-size: 16px;
     width: 100%;
     display: block;
   }
-  
+
   .nav-link-enhanced:hover {
     background: #f8f9fa;
     border-radius: 10px;
   }
-  
+
   /* Mobile search */
   .mobile-search {
     display: block;
     width: 100%;
     margin-top: 15px;
   }
-  
+
   .desktop-search {
     display: none;
   }
-  
+
   .search-box-enhanced {
     width: 100%;
   }
-  
+
   .search-box-enhanced input {
     width: 100%;
     padding: 15px 50px 15px 20px;
@@ -1097,11 +1163,11 @@ export default {
   .mobile-search {
     display: none;
   }
-  
+
   .desktop-search {
     display: block;
   }
-  
+
   .mobile-toggle {
     display: none;
   }
@@ -1121,13 +1187,104 @@ export default {
   .brand-logo h4 {
     font-size: 1.3rem;
   }
-  
+
   .brand-tagline {
     font-size: 10px;
   }
-  
+
   .navbar {
     padding: 0.75rem 0;
   }
+}
+/* Search Bar Styles */
+.search-container {
+  position: relative;
+  margin-bottom: 1.5rem;
+  max-width: 400px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 40px 10px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 50px;
+  font-size: 15px;
+  background: #f8f9fa;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  border-color: #A62C2C;
+  outline: none;
+  background: #fff;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #A62C2C;
+  font-size: 1.1rem;
+  pointer-events: none;
+}
+
+.search-dropdown {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+  z-index: 10;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.search-dropdown li {
+  padding: 10px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.15s;
+}
+
+.search-dropdown li:hover {
+  background: #f8f9fa;
+}
+
+.dropdown-thumb {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-right: 12px;
+}
+
+.no-results {
+  color: #888;
+  text-align: center;
+  padding: 12px 0;
+  font-size: 0.95rem;
+}
+.search-dropdown a,
+.search-dropdown .router-link {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.search-dropdown a:hover,
+.search-dropdown .router-link:hover {
+  color: #A62C2C;
+  background: #f8f9fa;
 }
 </style>
